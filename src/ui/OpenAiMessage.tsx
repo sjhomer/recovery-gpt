@@ -27,9 +27,9 @@ export const OpenAiMessage: React.FC<{ message: RenderedMessage }> = ({
       }
     >
       <div
-        className="convoInner flex p-4 gap-4 text-base md:gap-6 md:max-w-2xl lg:max-w-4xl xl:max-w-5xl md:py-6 lg:px-4 m-auto">
+        className="convoInner flex p-4 text-base gap-3 md:gap-6 md:max-w-2xl lg:max-w-4xl xl:max-w-5xl md:py-6 lg:px-4 m-auto">
         <div className="userImage flex-shrink-0 flex flex-col relative items-end">
-          <div className="w-12">
+          <div className="w-6 md:w-12">
             <div className="relative flex">
               <span
                 className="box-border inline-block overflow-hidden w-initial h-initial bg-none opacity-100 border-0 m-0 p-0 relative max-w-full">

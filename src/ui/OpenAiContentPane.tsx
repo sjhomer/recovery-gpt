@@ -121,11 +121,11 @@ function OpenAiContentPane({activeConversation}: ConversationPaneProps) {
           style={{zIndex: 1}}
         >
           <h4
-            className="title text-center text-2xl font-bold mt-2 flex items-center gap-2 justify-center"
+            className="title text-center text-2xl font-bold my-2 ml-16 md:ml-0 flex items-center gap-4 justify-center"
             style={{cursor: "pointer"}}
             data-conversation-id={`conversation${activeConversation.id}`}
           >
-            {activeConversation.title} &ndash; <span className="text-base">{
+            <span>{activeConversation.title}</span><span className="text-base">{
             // @ts-ignore
             convertUnixTimestampToDate(messages?.[0].create_time, {
               hour12: true,
