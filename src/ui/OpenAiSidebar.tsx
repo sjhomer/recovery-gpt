@@ -18,7 +18,7 @@ export const OpenAiSidebar = ({file, links}: OpenAiSidebarProps) => {
   }
 
   let sidebarToggle = <a
-    className={isSidebarOpen ? "flex p-3 gap-3 transition-colors duration-200 text-white cursor-pointer text-sm rounded-md border border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center" : "fixed top-4 left-4 flex p-3 gap-3 transition-colors duration-200 text-white cursor-pointer text-sm rounded-md border border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center z-[999]"}
+    className={isSidebarOpen ? "bg-gray-900 flex p-3 gap-3 transition-colors duration-200 text-white cursor-pointer text-sm rounded-md border border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center" : "bg-gray-900 fixed top-4 left-4 flex p-3 gap-3 transition-colors duration-200 text-white cursor-pointer text-sm rounded-md border border-white/20 hover:bg-gray-900/90 h-11 w-11 flex-shrink-0 items-center justify-center z-[999]"}
     onClick={toggleSidebar}>
     <svg
       stroke="currentColor"
@@ -39,13 +39,13 @@ export const OpenAiSidebar = ({file, links}: OpenAiSidebarProps) => {
   </a>
 
   return (!isSidebarOpen ? sidebarToggle :
-      <div className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 ${isSidebarOpen ? "w-1/4" : "w-0"}`}>
+      <div className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 ${isSidebarOpen ? "w-[260px]" : "w-60"}`}>
         <div className="h-full">
           <div className="flex h-full min-h-0 flex-col">
             <div className="scrollbar-trigger relative h-full w-full flex-1 items-start border-white/20">
               <h2 className="sr-only">Chat history</h2>
               <nav className="flex h-full w-full flex-col p-2" aria-label="Chat history">
-                <div className="mb-1 flex flex-row gap-2">
+                <div className="mb-1 flex flex-row gap-2 text-white">
                   <span>{file} Chats</span>
                   <span className="" data-state="closed">
                   {sidebarToggle}
