@@ -1,5 +1,4 @@
 import React, {useState} from "react"
-import {Link as ScrollLink} from "react-scroll"
 
 export interface OpenAiSidebarLink {
   label: string;
@@ -9,9 +8,10 @@ export interface OpenAiSidebarLink {
 interface OpenAiSidebarProps {
   selection: JSX.Element;
   links: OpenAiSidebarLink[];
+  onLinkClick: (id: string) => void; // <-- New prop
 }
 
-export const OpenAiSidebar = ({selection, links}: OpenAiSidebarProps) => {
+export const OpenAiSidebar = ({selection, links, onLinkClick}: OpenAiSidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   const toggleSidebar = () => {
@@ -68,9 +68,10 @@ export const OpenAiSidebar = ({selection, links}: OpenAiSidebarProps) => {
                           {links.map((link, index) => (
                             <li className="relative z-[15]" data-projection-id="3" style={{opacity: 1, height: "auto"}}
                                 key={index}>
-                              <ScrollLink
+                              <a
                                 className="flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-[#2A2B32] cursor-pointer break-all )} )} hover:pr-4 bg-gray-900 group"
-                                to={link.url} smooth={true}>
+                                // @ts-ignore
+                                onClick={()=>onLinkClick(link.url)}>
                                 <svg
                                   stroke="currentColor"
                                   fill="none"
@@ -87,7 +88,7 @@ export const OpenAiSidebar = ({selection, links}: OpenAiSidebarProps) => {
                                 </svg>
                                 <div
                                   className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">{link.label}</div>
-                              </ScrollLink>
+                              </a>
                             </li>
                           ))}
                         </ol>

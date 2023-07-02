@@ -5,7 +5,7 @@ interface AvatarProps {
 }
 
 const OpenAiAvatar: React.FC<AvatarProps> = ({ name }) => {
-  const initials = name.charAt(0).toUpperCase();
+  const initials = /user/i.test(name) ? "U" : "A"
 
   // Determine the background color based on the initial
   const bgColor = initials === "U" ? "bg-blue-500" : "bg-green-500";

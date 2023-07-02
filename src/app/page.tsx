@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import ConversationArchive from "../ui/ConversationArchive"
+import OpenAiArchiveLayout from "../ui/OpenAiArchiveLayout"
 import fs from 'fs';
 import path from 'path';
 
@@ -20,7 +20,7 @@ export default async function Home() {
 
   return (
     <main>
-      <ConversationArchive files={files} loadFile={loadFile} />
+      <OpenAiArchiveLayout files={files} loadFile={loadFile} />
     </main>
   )
 }
