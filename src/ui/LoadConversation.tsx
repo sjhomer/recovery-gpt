@@ -1,5 +1,6 @@
 import React, {ChangeEvent, FormEvent, useState} from "react"
 import {Conversations} from "@/ui/OpenAiContentPane"
+import {convertUnixTimestampToDate} from "@/lib"
 
 interface FileFormProps {
   handleFileChange: (fileData: Conversations, filename: string) => void;
@@ -36,14 +37,6 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
     console.log(fileContent)
   }
 
-  const convertUnixTimestampToDate = (timestamp: number) => {
-    const date = new Date(timestamp * 1000)
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
-  }
 
   const generateFilename = (parsedFileData: Conversations) => {
     const firstConversation = parsedFileData[0]

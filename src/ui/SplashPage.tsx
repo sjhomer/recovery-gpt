@@ -17,7 +17,7 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({ action }) => {
         <p className="text-red-500 font-medium mb-6">You must select an exported "conversation.json" to load.</p>
         <p className="text-gray-300">Enjoy reviewing your old chats easily and safely!</p>
 
-        {action}
+        <div className="mt-8 w-1/2 mx-auto">{action}</div>
       </div>
     </div>
   );

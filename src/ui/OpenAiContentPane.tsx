@@ -1,6 +1,8 @@
-import React, {useCallback, useEffect, useMemo} from "react"
+import React, {useCallback, useRef} from "react"
 import hljs from "highlight.js"
 import {OpenAiMessage} from "./OpenAiMessage"
+import {useInterval} from "usehooks-ts"
+import {convertUnixTimestampToDate} from "@/lib"
 
 type AuthorRole = "system" | "user" | "assistant";
 
@@ -59,6 +61,7 @@ interface ConversationListProps {
 interface RenderedMessage {
   author: string;
   text: string;
+  create_time: number;
 }
 
 interface ConversationPaneProps {
@@ -79,6 +82,7 @@ function OpenAiContentPane({activeConversation}: ConversationPaneProps) {
           return {
             author: authorName,
             text: message.content.parts[0],
+            create_time: message.create_time,
           }
         }
         return null
@@ -105,41 +109,53 @@ function OpenAiContentPane({activeConversation}: ConversationPaneProps) {
       [renderMessage]
     )
 
-    const renderedActiveConversation = useMemo(
-      () => activeConversation && (
+    let messages = activeConversation && getConversationMessages(activeConversation)
+    const renderedActiveConversation =
+      activeConversation && <div
+        key={activeConversation.id}
+        className="conversation"
+        id={`${activeConversation.id}`}
+      >
         <div
-          key={activeConversation.id}
-          className="conversation"
-          id={`${activeConversation.id}`}
+          className="sticky top-0 bg-slate-800 py-2 shadow"
+          style={{zIndex: 1}}
         >
-          <div
-            className="sticky top-0 bg-slate-800 py-2 shadow"
-            style={{zIndex: 1}}
+          <h4
+            className="title text-center text-2xl font-bold mt-2 flex items-center gap-2 justify-center"
+            style={{cursor: "pointer"}}
+            data-conversation-id={`conversation${activeConversation.id}`}
           >
-            <h4
-              className="title text-center text-2xl font-bold mt-2"
-              style={{cursor: "pointer"}}
-              data-conversation-id={`conversation${activeConversation.id}`}
-            >
-              {activeConversation.title}
-            </h4>
-          </div>
-          <div className="content">
-            {getConversationMessages(activeConversation).map((message, j) => (
-              <OpenAiMessage key={j} message={message}/>
-            ))}
-          </div>
+            {activeConversation.title} &ndash; <span className="text-base">{
+            // @ts-ignore
+            convertUnixTimestampToDate(messages?.[0].create_time, {
+              hour12: true,
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          }</span>
+          </h4>
         </div>
-      ),
-      [activeConversation, getConversationMessages]
-    )
+        <div className="content">
+          {messages?.map((message, j) => (
+            <OpenAiMessage key={j} message={message}/>
+          ))}
+        </div>
+      </div>
 
-    useEffect(() => {
-      hljs.highlightAll()
-    }, [renderedActiveConversation])
+    const ref = useRef<HTMLDivElement>(null)
+
+    useInterval(()=>{
+      // If there are any code blocks missing 'hljs' classes, highlight them
+      const codeBlocks = ref.current?.querySelectorAll("code:not(.hljs)")
+      if (codeBlocks) {
+        codeBlocks.forEach((block) => {
+          hljs.highlightElement(block as HTMLElement)
+        })
+      }
+    }, 10);
 
     return (
-      <div className="h-full dark:bg-gray-800">
+      <div ref={ref} className="contentPane h-full dark:bg-gray-800">
         {renderedActiveConversation} {/* <-- Render only active conversation */}
       </div>
     )

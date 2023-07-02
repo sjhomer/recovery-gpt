@@ -12,7 +12,7 @@ const OpenAiAvatar: React.FC<AvatarProps> = ({ name }) => {
   const bgColor = isUser ? "bg-blue-500" : "bg-green-500";
 
   return (
-    <div className={`rounded-full w-12 h-12 flex items-center justify-center ${bgColor}`}>
+    <div className={`rounded-full w-12 h-12 flex items-center justify-center ${bgColor} mt-4`}>
       <span className="text-white text-2xl font-bold">{isUser? 'U': <OpenAiChatImage/>}</span>
     </div>
   );
