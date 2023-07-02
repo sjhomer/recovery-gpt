@@ -1,6 +1,8 @@
 import React, {useEffect, useMemo, useState} from "react"
 import {SidebarToggle} from "@/ui/OpenAiSidebar/SidebarToggle"
 import {SidebarLinks} from "@/ui/OpenAiSidebar/SidebarLinks"
+import {ChevronDown, ChevronUp} from "lucide-react"
+import {getWeekNumber} from "@/lib"
 
 export interface OpenAiSidebarLink {
   label: string;
@@ -22,29 +24,48 @@ export const OpenAiSidebar = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [activeLink, setActiveLink] = useState("")
 
-  const groupedLinks = useMemo(() => links.reduce(
-    (groups: { [date: string]: OpenAiSidebarLink[] }, link) => {
-      const date = new Date(link.date * 1000).toDateString()
-      if (!groups[date]) {
-        groups[date] = []
-      }
-      groups[date].push(link)
-      return groups
-    },
-    {}
-  ), [links])
+  const groupedLinks = useMemo(() => {
+    return links.reduce((groups: { [date: string]: { [week: string]: OpenAiSidebarLink[] } }, link) => {
+      const date = new Date(link.date * 1000)
+      const monthYear = `${date.toLocaleString("default", {month: "short"})} ${date.getFullYear()}`
+      const week = `${getWeekNumber(date)}`
 
-  const [expandedDates, setExpandedDates] = useState<string[]>([]);
+      if (!groups[monthYear]) {
+        groups[monthYear] = {}
+      }
+
+      if (!groups[monthYear][week]) {
+        groups[monthYear][week] = []
+      }
+
+      groups[monthYear][week].push(link)
+      return groups
+    }, {})
+  }, [links])
+
+  const [expandedDates, setExpandedDates] = useState<string[]>(() => {
+    // Pick from th groupedLinks the first date and week, i.e. `${monthYear} ${week}`
+    const firstDate = Object.keys(groupedLinks)[0]
+    // Weeks happen to pool backwards, so we need to pick the last week
+    const firstWeek = Object.keys(groupedLinks[firstDate]).pop()
+    return [`${firstDate}-${firstWeek}`]
+  })
 
   const toggleDate = (date: string) => {
     setExpandedDates(prevDates => {
       if (prevDates.includes(date)) {
-        return prevDates.filter(prevDate => prevDate !== date);
+        return prevDates.filter(prevDate => prevDate !== date)
       } else {
-        return [...prevDates, date];
+        return [...prevDates, date]
       }
-    });
-  };
+    })
+
+    // Scroll the sidebar to show the selected date at the top, if we're opening it, not closing
+    const dateElement = document.getElementById(`date-${date}`)
+    if (dateElement && !expandedDates.includes(date)) {
+      dateElement.scrollIntoView({behavior: "smooth", block: "start"})
+    }
+  }
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
@@ -78,26 +99,45 @@ export const OpenAiSidebar = ({
               </div>
               <div className="flex-col flex-1 transition-opacity duration-500 overflow-y-auto">
                 <div className="flex flex-col gap-2 pb-2 text-gray-100 text-sm">
-                  {Object.entries(groupedLinks).map(([date, links], index) => (
-                    <div key={index}>
-                      <div
-                        className="sticky top-0 z-[16]"
-                        data-projection-id="2"
-                        style={{opacity: 1}}
-                      >
-                        <h3
-                          className="h-9 pb-4 pt-3 px-3 text-base text-gray-500 font-medium text-ellipsis overflow-hidden break-all bg-gray-900 uppercase">
-                          {date}
-                        </h3>
-                      </div>
-                      <SidebarLinks
-                        links={links}
-                        onLinkClick={onLinkClick}
-                        toggleSidebar={toggleSidebar}
-                        activeLink={activeLink}
-                        setActiveLink={setActiveLink}/>
-                    </div>
-                  ))}
+                  {Object.entries(groupedLinks).map(([monthYear, weeks]) => {
+                    return Object.entries(weeks).reverse().map(([week, links], index) => {
+                      let date = `${monthYear}-${week}`
+                      const isExpanded = expandedDates.includes(date)
+
+                      return (
+                        <div
+                          key={`${date}-${index}`}
+                             className={`${isExpanded ? "bg-gray-700" : ""} py-1 border-b-2 border-b-gray-800 hover:bg-gray-700`}
+                        >
+                          <div
+                            id={`date-${date}`} // Unique ID for scrolling
+                            className={` z-[16] overflow-hidden`}
+                          >
+                            <button
+                              className={` ${isExpanded ? "text-white font-bold" : "text-gray-500 font-normal"}} h-9 pb-4 pt-3 px-3 text-base font-medium text-ellipsis overflow-hidden break-all uppercase w-full flex items-center justify-between  hover:text-white `}
+                              onClick={() => toggleDate(date)}
+                            >
+                              {monthYear} &ndash; W{week} ({links.length})
+                              {isExpanded ? (
+                                <ChevronUp className="text-white"/>
+                              ) : (
+                                <ChevronDown className="text-gray-600"/>
+                              )}
+                            </button>
+                          </div>
+                          <SidebarLinks
+                            className={`${
+                              !isExpanded ? "-translate-x-full h-0 duration-0 overflow-hidden" : "duration-500"} transition-all `}
+                            links={links}
+                            onLinkClick={onLinkClick}
+                            toggleSidebar={toggleSidebar}
+                            activeLink={activeLink}
+                            setActiveLink={setActiveLink}
+                          />
+                        </div>
+                      )
+                    })
+                  })}
                 </div>
               </div>
             </nav>

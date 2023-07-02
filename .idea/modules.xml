@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/gpt-archive.iml" filepath="$PROJECT_DIR$/.idea/gpt-archive.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/recovery-gpt.iml" filepath="$PROJECT_DIR$/.idea/recovery-gpt.iml" />
     </modules>
   </component>
 </project>

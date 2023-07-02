@@ -4,6 +4,7 @@ import {OpenAiSidebarLink} from "@/ui/OpenAiSidebar"
 import {useWindowSize} from "usehooks-ts"
 
 interface SidebarLinksProps {
+  className: string;
   links: OpenAiSidebarLink[];
   onLinkClick: (id: string) => void;
   toggleSidebar: () => void;
@@ -11,10 +12,10 @@ interface SidebarLinksProps {
   setActiveLink: (id: string) => void;
 }
 
-export const SidebarLinks = ({links, onLinkClick, activeLink, setActiveLink, toggleSidebar}: SidebarLinksProps) => {
+export const SidebarLinks = ({className, links, onLinkClick, activeLink, setActiveLink, toggleSidebar}: SidebarLinksProps) => {
   const {width, height} = useWindowSize()
 
-  return <ol>
+  return <ol className={className}>
     {links.map((link) => {
       const clickLink = () => {
         onLinkClick(link.url)
@@ -29,7 +30,7 @@ export const SidebarLinks = ({links, onLinkClick, activeLink, setActiveLink, tog
           key={link.url}
         >
           <a
-            className={`flex py-2 px-3 items-center gap-3 relative rounded-md hover:bg-[#2A2B32] cursor-pointer break-all bg-gray-900 group ${
+            className={`flex py-2 px-3 items-center gap-3 relative rounded-md hover:bg-[#2A2B32] cursor-pointer break-all group ${
               link.url === activeLink ? "bg-[#2A2B32]" : "" // Add "active" class if the link is active
             }`}
             // @ts-ignore
