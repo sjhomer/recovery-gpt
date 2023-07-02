@@ -1,16 +1,9 @@
 "use client"
-import {useState} from "react"
+import React, {useState} from "react"
 import OpenAiContentPane, {Conversation, Conversations} from "./OpenAiContentPane"
 import {OpenAiSidebar, OpenAiSidebarLink} from "./OpenAiSidebar"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import LoadConversation from "@/ui/LoadConversation"
+import SplashPage from "@/ui/SplashPage"
 
 interface ConversationArchiveProps {
   files?: string[];
@@ -18,56 +11,53 @@ interface ConversationArchiveProps {
 }
 
 function OpenAiArchiveLayout({files, loadFile}: ConversationArchiveProps) {
-  const [selectedFile, setSelectedFile] = useState("")
   const [conversations, setConversations] = useState<Conversations>([])
   const [links, setLinks] = useState<OpenAiSidebarLink[]>([])
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null)
+  const [fileName, setFileName] = useState("Select a file")
 
-  const handleFileChange = (value: string) => {
-    setSelectedFile(value)
-    loadFile(value).then((file) => {
-      let fileData = JSON.parse(file) as Conversations
-      setConversations(fileData)
-      setActiveConversation(fileData[0] || null); // <--- Set the first conversation as active
+  const handleFileChange = (fileData: Conversations) => {
+    setConversations(fileData)
+    setActiveConversation(fileData[0] || null) // <--- Set the first conversation as active
 
-      // loop through the fileData to get the links
-      let links: OpenAiSidebarLink[] = []
-      fileData.forEach((conversation) => {
-        const conversationLink: OpenAiSidebarLink = {
-          label: conversation.title,
-          url: conversation.id,
-        }
-        links.push(conversationLink)
-      })
-      setLinks(links)
+    // loop through the fileData to get the links
+    let links: OpenAiSidebarLink[] = []
+    fileData.forEach((conversation) => {
+      const conversationLink: OpenAiSidebarLink = {
+        label: conversation.title,
+        url: conversation.id,
+      }
+      links.push(conversationLink)
     })
+    setLinks(links)
   }
 
   const handleLinkClick = (id: string) => {
-    const conversation = conversations.find(conversation => conversation.id === id);
-    setActiveConversation(conversation || null);
+    const conversation = conversations.find(conversation => conversation.id === id)
+    setActiveConversation(conversation || null)
   }
 
-  const fileSelect = <Select onValueChange={handleFileChange}>
-    <SelectTrigger className="w-[180px]">
-      <SelectValue placeholder="Select a file"/>
-    </SelectTrigger>
-    <SelectContent>
-      <SelectGroup>
-        <SelectLabel>Files</SelectLabel>
-        {files?.map((file, index) => (
-          <SelectItem key={index} value={file}>
-            {file}
-          </SelectItem>
-        ))}
-      </SelectGroup>
-    </SelectContent>
-  </Select>
+  const UploadButton =
+    <LoadConversation
+      handleFileChange={handleFileChange}
+      fileName={fileName}
+      setFileName={setFileName}
+    />
 
   return (
-    <div className="overflow-hidden w-full h-screen relative flex z-0 bg-gray-800">
-      <OpenAiSidebar selection={fileSelect} links={links} onLinkClick={handleLinkClick}/>
-      <OpenAiContentPane activeConversation={activeConversation}/>
+    <div className="overflow-hidden w-full h-screen relative flex z-0 bg-gray-700">
+      {conversations.length && <OpenAiSidebar selection={UploadButton} links={links} onLinkClick={handleLinkClick}/>}
+      <div className="relative flex h-full max-w-full flex-1 overflow-hidden text-white">
+        <div className="flex h-full max-w-full flex-1 flex-col">
+          <main className="relative h-full w-full transition-width flex flex-col overflow-auto items-stretch flex-1">
+            <div className="absolute right-4 top-2 z-10 hidden flex-col gap-2 md:flex"></div>
+            <div className="flex-1 overflow-y-scroll">
+              {conversations.length ? <OpenAiContentPane activeConversation={activeConversation}/> :
+                <SplashPage action={UploadButton}/>}
+            </div>
+          </main>
+        </div>
+      </div>
     </div>
   )
 }

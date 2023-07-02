@@ -23,9 +23,9 @@ export const OpenAiMessage: React.FC<{ message: RenderedMessage }> = ({message})
   return <div
     className={isUser ?
       // User styles
-      "group w-full text-gray-100 border-b border-gray-900/50 bg-gray-800" :
+      "group w-full text-gray-100 border-b border-gray-900/50 bg-gray-700" :
       // Assistant styles
-      "group w-full text-gray-100 dark:text-gray-100 border-b border-gray-900/50 bg-stone-900"
+      "group w-full text-gray-100 dark:text-gray-100 border-b border-gray-900/50 bg-slate-600"
     }>
     <div
       className="convoInner flex p-4 gap-4 text-base md:gap-6 md:max-w-2xl lg:max-w-4xl xl:max-w-5xl md:py-6 lg:px-4 m-auto">
