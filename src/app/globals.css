@@ -76,3 +76,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+body {
+  background-color: rgba(52,53,65,1);
+}
+

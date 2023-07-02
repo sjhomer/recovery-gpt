@@ -1,4 +1,5 @@
 import React, {useState} from "react"
+import {Link as ScrollLink} from "react-scroll"
 
 export interface OpenAiSidebarLink {
   label: string;
@@ -6,11 +7,11 @@ export interface OpenAiSidebarLink {
 }
 
 interface OpenAiSidebarProps {
-  file: string;
+  selection: JSX.Element;
   links: OpenAiSidebarLink[];
 }
 
-export const OpenAiSidebar = ({file, links}: OpenAiSidebarProps) => {
+export const OpenAiSidebar = ({selection, links}: OpenAiSidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   const toggleSidebar = () => {
@@ -39,14 +40,15 @@ export const OpenAiSidebar = ({file, links}: OpenAiSidebarProps) => {
   </a>
 
   return (!isSidebarOpen ? sidebarToggle :
-      <div className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 ${isSidebarOpen ? "w-[260px]" : "w-60"}`}>
+      <div
+        className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 h-full ${isSidebarOpen ? "w-[260px]" : "w-60"}`}>
         <div className="h-full">
           <div className="flex h-full min-h-0 flex-col">
             <div className="scrollbar-trigger relative h-full w-full flex-1 items-start border-white/20">
               <h2 className="sr-only">Chat history</h2>
               <nav className="flex h-full w-full flex-col p-2" aria-label="Chat history">
                 <div className="mb-1 flex flex-row gap-2 text-white">
-                  <span>{file} Chats</span>
+                  {selection}
                   <span className="" data-state="closed">
                   {sidebarToggle}
                 </span>
@@ -66,9 +68,9 @@ export const OpenAiSidebar = ({file, links}: OpenAiSidebarProps) => {
                           {links.map((link, index) => (
                             <li className="relative z-[15]" data-projection-id="3" style={{opacity: 1, height: "auto"}}
                                 key={index}>
-                              <a
+                              <ScrollLink
                                 className="flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-[#2A2B32] cursor-pointer break-all )} )} hover:pr-4 bg-gray-900 group"
-                                href={link.url}>
+                                to={link.url} smooth={true}>
                                 <svg
                                   stroke="currentColor"
                                   fill="none"
@@ -85,7 +87,7 @@ export const OpenAiSidebar = ({file, links}: OpenAiSidebarProps) => {
                                 </svg>
                                 <div
                                   className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">{link.label}</div>
-                              </a>
+                              </ScrollLink>
                             </li>
                           ))}
                         </ol>

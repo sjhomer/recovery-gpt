@@ -1,7 +1,8 @@
-import React, {useEffect, useMemo} from "react"
-import hljs from "highlight.js"
-import ConversationListWrapper from "./ConversationListWapper"
-import {OpenAiMessage} from "./OpenAiMessage"
+import React, {useCallback, useEffect, useLayoutEffect, useMemo} from "react"
+import hljs from "highlight.js";
+import ConversationListWrapper from "./ConversationListWapper";
+import { OpenAiMessage } from "./OpenAiMessage";
+// import InfiniteScroll from 'react-infinite-scroll-component';
 
 type AuthorRole = "system" | "user" | "assistant";
 
@@ -29,13 +30,15 @@ interface Message {
   recipient: string;
 }
 
+type MappingEntry = {
+  id: string;
+  message: Message | null;
+  parent: string | null;
+  children: string[];
+}
+
 interface Mapping {
-  [key: string]: {
-    id: string;
-    message: Message | null;
-    parent: string | null;
-    children: string[];
-  };
+  [key: string]: MappingEntry;
 }
 
 interface Conversation {
@@ -60,107 +63,99 @@ interface RenderedMessage {
   text: string;
 }
 
-function ConversationList({conversations}: ConversationListProps) {
+function ConversationList({ conversations }: ConversationListProps) {
+  const handleConversationClick = useCallback((conversationDiv: HTMLDivElement | null) => {
+    conversationDiv?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
-  const handleConversationClick = (conversationId: string) => {
-    const conversationDiv = document.getElementById(conversationId)
-    conversationDiv?.scrollIntoView({behavior: "smooth"})
-
-    const mainPanel = document.getElementById("mainPanel")
-    if (mainPanel instanceof Element) {
-      mainPanel.scrollTop = conversationDiv?.offsetTop ?? 0
-    }
-  }
-
-  const renderUserMessage = (message: Message): RenderedMessage | null => {
-    if (
-      message.author.role === "user" &&
-      message.content &&
-      message.content.content_type === "text" &&
-      message.content.parts.length > 0 &&
-      message.content.parts[0].length > 0
-    ) {
-      return {
-        author: "User",
-        text: message.content.parts[0],
+  const renderMessage = useCallback(
+    (message: Message, role: AuthorRole, authorName: string): RenderedMessage | null => {
+      if (
+        message.author.role === role &&
+        message.content &&
+        message.content.content_type === "text" &&
+        message.content.parts.length > 0 &&
+        message.content.parts[0].length > 0
+      ) {
+        return {
+          author: authorName,
+          text: message.content.parts[0],
+        };
       }
-    }
-    return null
-  }
+      return null;
+    },
+    []
+  );
 
-  const renderAssistantMessage = (message: Message): RenderedMessage | null => {
-    if (
-      message.author.role === "assistant" &&
-      message.content &&
-      message.content.content_type === "text" &&
-      message.content.parts.length > 0 &&
-      message.content.parts[0].length > 0
-    ) {
-      return {
-        author: "ChatGPT",
-        text: message.content.parts[0],
-      }
-    }
-    return null
-  }
-
-  const getConversationMessages = (conversation: Conversation): RenderedMessage[] => {
-    const messages: RenderedMessage[] = []
-    let currentNode = conversation.current_node
-    while (currentNode != null) {
-      const node = conversation.mapping[currentNode]
-      if (node.message && node.message.author.role !== "system") {
-        const userMessage = renderUserMessage(node.message)
-        if (userMessage) {
-          messages.push(userMessage)
+  const getConversationMessages = useCallback(
+    (conversation: Conversation): RenderedMessage[] => {
+      const messages: RenderedMessage[] = [];
+      let currentNode: string | null = conversation.current_node;
+      while (currentNode != null) {
+        const node: MappingEntry = conversation.mapping[currentNode];
+        if (node.message && node.message.author.role !== "system") {
+          const userMessage = renderMessage(node.message, "user", "User");
+          const assistantMessage = renderMessage(node.message, "assistant", "ChatGPT");
+          userMessage && messages.unshift(userMessage);
+          assistantMessage && messages.unshift(assistantMessage);
         }
-        const assistantMessage = renderAssistantMessage(node.message)
-        if (assistantMessage) {
-          messages.push(assistantMessage)
-        }
+        currentNode = node.parent ?? null;
       }
-      if (node.parent != null) {
-        currentNode = node.parent
-      }
-    }
-    return messages.reverse()
-  }
+      return messages;
+    },
+    [renderMessage]
+  );
 
-  const renderedConversations = useMemo(() =>
-    conversations?.map((conversation, i) => {
-      const messages = getConversationMessages(conversation)
-      return (
-        <div key={i} className="conversation" id={`conversation${i}`}>
-          <h4
-            className="title"
-            style={{cursor: "pointer"}}
-            onClick={() => handleConversationClick(`conversation${i}`)}
-            data-conversation-id={`conversation${i}`}
+  const renderedConversations = useMemo(
+    () =>
+      conversations?.map((conversation, i) => {
+        const messages = getConversationMessages(conversation);
+
+        return (
+          <div
+            key={i}
+            className="conversation"
+            id={`conversation${i}`}
+            ref={handleConversationClick}
           >
-            {conversation.title}
-          </h4>
-          <div className="content"
-            // style={{ display: "none" }}
-          >
-            {messages.map((message, j) =>
-              <OpenAiMessage key={j} message={message}/>
-            )}
+            <h4
+              className="title text-center text-2xl font-bold mt-4"
+              style={{ cursor: "pointer" }}
+              // @ts-ignore
+              onClick={() => handleConversationClick(`conversation${i}`)}
+              data-conversation-id={`conversation${i}`}
+            >
+              {conversation.title}
+            </h4>
+            <div className="content">
+              {messages.map((message, j) => (
+                <OpenAiMessage key={j} message={message} />
+              ))}
+            </div>
           </div>
-        </div>
-      )
+        );
+      }),
+    [conversations, getConversationMessages, handleConversationClick]
+  );
 
-      setTimeout(()=>{
-        hljs.highlightAll()
-      }, 2000);
-    }), [conversations, getConversationMessages])
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      hljs.highlightAll();
+    }, 5000);
+  }, [renderedConversations]);
 
   return (
     <ConversationListWrapper>
-      <div id="root">
-        {renderedConversations}
-      </div>
+      {/*<InfiniteScroll*/}
+      {/*  dataLength={conversations.length}*/}
+      {/*  next={fetchMoreData} // you should implement this function to fetch more data when user scroll reaches the end*/}
+      {/*  hasMore={true} // this should be updated based on your API pagination status*/}
+      {/*  loader={<h4>Loading...</h4>} // you can customize this loader*/}
+      {/*>*/}
+        <div>{renderedConversations}</div>
+      {/*</InfiniteScroll>*/}
     </ConversationListWrapper>
-  )
+  );
 }
 
-export default ConversationList
+export default ConversationList;
