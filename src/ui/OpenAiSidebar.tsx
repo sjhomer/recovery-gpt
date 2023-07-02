@@ -39,7 +39,7 @@ export const OpenAiSidebar = ({file, links}: OpenAiSidebarProps) => {
   </a>
 
   return (!isSidebarOpen ? sidebarToggle :
-      <div className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 ${isSidebarOpen ? "w-260" : "w-0"}`}>
+      <div className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 ${isSidebarOpen ? "w-1/4" : "w-0"}`}>
         <div className="h-full">
           <div className="flex h-full min-h-0 flex-col">
             <div className="scrollbar-trigger relative h-full w-full flex-1 items-start border-white/20">

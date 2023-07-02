@@ -42,10 +42,10 @@ function ConversationArchive({files, loadFile}: ConversationArchiveProps) {
           ))}
         </select>
       </div>
-      {selectedFile && <>
+      {selectedFile && <div className="overflow-hidden w-full h-full relative flex z-0">
         <OpenAiSidebar file={selectedFile} links={links}/>
         <ConversationList conversations={conversations}/>
-      </>}
+      </div>}
     </>
   )
 }

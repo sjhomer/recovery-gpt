@@ -1,9 +1,9 @@
-"use client"
-import React, {useEffect} from "react"
-import {marked} from "marked"
-import hljs from "highlight.js"
-import ConversationListWrapper from "./ConversationListWapper"
-
+import React, { useEffect } from "react";
+import { marked } from "marked";
+import hljs from "highlight.js";
+import ConversationListWrapper from "./ConversationListWapper";
+import OpenAiUserImage from "./OpenAiUserImage"
+import {OpenAiChatImage} from "./OpenAiChatImage"
 
 type AuthorRole = "system" | "user" | "assistant";
 
@@ -53,92 +53,148 @@ interface Conversation {
 
 export type Conversations = Conversation[];
 
-
 interface ConversationListProps {
   conversations: Conversations;
 }
 
-function ConversationList({conversations}: ConversationListProps) {
+interface RenderedMessage {
+  author: string;
+  text: string;
+  className: string;
+}
+
+function ConversationList({ conversations }: ConversationListProps) {
   useEffect(() => {
-    hljs.initHighlightingOnLoad()
-    hljs.highlightAll()
-  }, [])
+    hljs.initHighlightingOnLoad();
+    hljs.highlightAll();
+  }, []);
 
   const handleConversationClick = (conversationId: string) => {
-    const conversationDiv = document.getElementById(conversationId)
-    conversationDiv?.scrollIntoView({behavior: "smooth"})
+    const conversationDiv = document.getElementById(conversationId);
+    conversationDiv?.scrollIntoView({ behavior: "smooth" });
 
-    const content = conversationDiv?.querySelector(".content") as HTMLDivElement
+    // const content = conversationDiv?.querySelector(
+    //   ".content"
+    // ) as HTMLDivElement;
     // check if content is type Element
-    if (content instanceof Element && content.style) {
-      content.style.display = content?.style.display === "none" ? "block" : "none"
-    }
+    // if (content instanceof Element && content.style) {
+    //   content.style.display = content?.style.display === "none" ? "block" : "none";
+    // }
 
-    const mainPanel = document.getElementById("mainPanel")
+    const mainPanel = document.getElementById("mainPanel");
     if (mainPanel instanceof Element) {
-      mainPanel.scrollTop = conversationDiv?.offsetTop ?? 0
+      mainPanel.scrollTop = conversationDiv?.offsetTop ?? 0;
     }
-  }
+  };
 
-  const getConversationMessages = (conversation: Conversation): Message[] => {
-    const messages: Message[] = []
-    let currentNode = conversation.current_node
-    while (currentNode != null) {
-      const node = conversation.mapping[currentNode]
-      if (
-        node.message &&
-        node.message.content &&
-        node.message.content.content_type === "text" &&
-        node.message.content.parts.length > 0 &&
-        node.message.content.parts[0].length > 0 &&
-        node.message.author.role !== "system"
-      ) {
-        let author = node.message.author.role
-        // if (author === "assistant") {
-        //   author = "ChatGPT"
-        // }
-        messages.push({author, text: node.message.content.parts[0]})
-      }
-      currentNode = node.parent
+  const renderUserMessage = (message: Message): RenderedMessage | null => {
+    if (
+      message.author.role === "user" &&
+      message.content &&
+      message.content.content_type === "text" &&
+      message.content.parts.length > 0 &&
+      message.content.parts[0].length > 0
+    ) {
+      return {
+        author: "User",
+        text: message.content.parts[0],
+        className: "user-message",
+      };
     }
-    return messages.reverse()
-  }
+    return null;
+  };
+
+  const renderAssistantMessage = (message: Message): RenderedMessage | null => {
+    if (
+      message.author.role === "assistant" &&
+      message.content &&
+      message.content.content_type === "text" &&
+      message.content.parts.length > 0 &&
+      message.content.parts[0].length > 0
+    ) {
+      return {
+        author: "ChatGPT",
+        text: message.content.parts[0],
+        className: "assistant-message",
+      };
+    }
+    return null;
+  };
+
+  const getConversationMessages = (conversation: Conversation): RenderedMessage[] => {
+    const messages: RenderedMessage[] = [];
+    let currentNode = conversation.current_node;
+    while (currentNode != null) {
+      const node = conversation.mapping[currentNode];
+      if (node.message && node.message.author.role !== "system") {
+        const userMessage = renderUserMessage(node.message);
+        if (userMessage) {
+          messages.push(userMessage);
+        }
+        const assistantMessage = renderAssistantMessage(node.message);
+        if (assistantMessage) {
+          messages.push(assistantMessage);
+        }
+      }
+      currentNode = node.parent;
+    }
+    return messages.reverse();
+  };
 
   return (
     <ConversationListWrapper>
       <div id="root">
         {conversations?.map((conversation, i) => {
-          const messages = getConversationMessages(conversation)
+          const messages = getConversationMessages(conversation);
           return (
             <div key={i} className="conversation" id={`conversation${i}`}>
               <h4
                 className="title"
-                style={{cursor: "pointer"}}
+                style={{ cursor: "pointer" }}
                 onClick={() => handleConversationClick(`conversation${i}`)}
                 data-conversation-id={`conversation${i}`}
               >
                 {conversation.title}
               </h4>
-              <div className="content" style={{display: "none"}}>
+              <div className="content"
+                   // style={{ display: "none" }}
+                >
                 {messages.map((message, j) => (
                   <div
                     key={j}
-                    className={`message ${/user/i.test(message.author) ? "user-message" : "assistant-message"}`}
+                    className={`message ${message.className}`}
                   >
                     <div></div>
                     <div>
                       <div className="author">{message.author}</div>
-                      {marked.parse(message.text)}
+                      <div className="message-text">
+                        <div className="group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 bg-gray-50 dark:bg-[#444654]">
+                          <div className="flex p-4 gap-4 text-base md:gap-6 md:max-w-2xl lg:max-w-[38rem] xl:max-w-3xl md:py-6 lg:px-0 m-auto">
+                            <div className="flex-shrink-0 flex flex-col relative items-end">
+                              <div className="w-[30px]">
+                                <div className="relative p-1 rounded-sm h-[30px] w-[30px] text-white flex items-center justify-center" style={{ backgroundColor: "rgb(25, 195, 125)" }}>
+                                  {message.author === 'user'? <OpenAiUserImage/>: <OpenAiChatImage/>}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex-grow">
+                              <div className="text-left leading-tight">
+                                {message.text}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </ConversationListWrapper>
-  )
+  );
 }
 
-export default ConversationList
+export default ConversationList;
