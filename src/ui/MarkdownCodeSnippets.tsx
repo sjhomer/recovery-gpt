@@ -1,7 +1,5 @@
-import {useToast} from "@/components/ui/use-toast"
-import {useRef} from "react"
+import {useLayoutEffect, useRef} from "react"
 import {marked} from "marked"
-import {useInterval} from "usehooks-ts"
 
 interface RenderedMessage {
   author: string;
@@ -11,7 +9,6 @@ interface RenderedMessage {
 export const MarkdownCodeSnippets: React.FC<{ message: RenderedMessage }> = ({
   message,
 }) => {
-  const {toast} = useToast()
   const ref = useRef<HTMLDivElement>(null)
   let isUser = /user/i.test(message.author)
 
@@ -30,7 +27,7 @@ export const MarkdownCodeSnippets: React.FC<{ message: RenderedMessage }> = ({
     isUser ? codeToPre(message.text) : message.text
   )
 
-  useInterval(() => {
+  useLayoutEffect(() => {
     // For the ref, add an upload button to all 'pre code' blocks so the user can copy them
     if (ref.current) {
       const codeBlocks = ref.current.querySelectorAll("pre:not(.copyableContainer) code")
@@ -47,25 +44,33 @@ export const MarkdownCodeSnippets: React.FC<{ message: RenderedMessage }> = ({
         const copyButton = document.createElement("button")
         copyButton.className =
           "flex ml-auto gap-2 rounded-md p-1 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400"
+        copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path><path d="M16 4h2a2 2 0 0 1 2 2v4"></path><path d="M21 14H11"></path><path d="m15 10-4 4 4 4"></path></svg>`
         copyButton.onclick = () => {
-          navigator.clipboard.writeText(block.textContent ?? "")
-          toast({
-            title: "🧑🏻‍💻 Copied code snippet to clipboard!",
+          const originalIcon = copyButton.innerHTML
+          const originalClass = copyButton.className
+          navigator.clipboard.writeText(block.textContent ?? "").then(() => {
+            copyButton.className =
+              "flex ml-auto gap-2 rounded-md p-1  dark:text-gray-400 disabled:dark:hover:text-gray-400 cursor-default"
+            copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+            const tooltip = document.createElement("div")
+            tooltip.className =
+              "absolute bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md text-xs top-7 right-0 w-40"
+            tooltip.textContent = "Copied to clipboard"
+            buttonContainer.appendChild(tooltip)
+
+            setTimeout(() => {
+              copyButton.innerHTML = originalIcon
+              buttonContainer.removeChild(tooltip)
+            }, 3000)
           })
         }
-        copyButton.innerHTML = `<svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
-         stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em"
-         xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-      <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-    </svg>`
         buttonContainer.appendChild(copyButton)
 
         preContainer.classList.add("relative", "copyableContainer")
         preContainer.insertBefore(buttonContainer, preContainer.firstChild)
       })
     }
-  }, 10)
+  }, [ref])
 
   return <div
     ref={ref}

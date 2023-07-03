@@ -118,3 +118,77 @@ body {
   font-size: 1rem;
   line-height: 1.75;
 }
+
+.markdown table {
+  --tw-border-spacing-x: 0px;
+  --tw-border-spacing-y: 0px;
+  border-collapse: separate;
+  border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
+  width: 100%;
+}
+
+.prose :where(table):not(:where([class~=not-prose] *)) {
+  font-size: .875em;
+  line-height: 1.7142857;
+  margin-bottom: 2em;
+  margin-top: 2em;
+  table-layout: auto;
+  text-align: left;
+  width: 100%;
+}
+table {
+  border-collapse: collapse;
+  border-color: inherit;
+  text-indent: 0;
+  overflow-x: scroll;
+}
+
+.prose :where(thead):not(:where([class~=not-prose] *)) {
+  border-bottom-color: var(--tw-prose-th-borders);
+  border-bottom-width: 1px;
+}
+
+.markdown th:first-child {
+  border-top-left-radius: 0.375rem;
+}
+.markdown th {
+  background-color: rgba(236,236,241,.2);
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-top-width: 1px;
+  padding: 0.25rem 0.75rem;
+}
+.prose :where(thead th:first-child):not(:where([class~=not-prose] *)) {
+  padding-left: 0;
+}
+.prose :where(thead th):not(:where([class~=not-prose] *)) {
+  font-weight: 600;
+  padding-bottom: 0.5714286em;
+  padding-left: 0.5714286em;
+  padding-right: 0.5714286em;
+  vertical-align: bottom;
+}
+
+.prose :where(tbody tr):not(:where([class~=not-prose] *)) {
+  border-bottom-color: var(--tw-prose-td-borders);
+  border-bottom-width: 1px;
+}
+.markdown td {
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  padding: 0.25rem 0.75rem;
+}
+
+.prose :where(tbody td:first-child,tfoot td:first-child):not(:where([class~=not-prose] *)) {
+  padding-left: 0;
+}
+.prose :where(tbody td,tfoot td):not(:where([class~=not-prose] *)) {
+  padding: 0.5714286em;
+}
+.prose :where(tbody td):not(:where([class~=not-prose] *)) {
+  vertical-align: baseline;
+}
+
+.markdown td:last-child {
+  border-right-width: 1px;
+}

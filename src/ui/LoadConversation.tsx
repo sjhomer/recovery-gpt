@@ -26,7 +26,7 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
       reader.readAsText(file)
     } else {
       setFileContent([])
-      setFileName("Select a file")
+      setFileName("Select a 'conversions.json' to review")
     }
   }
 
@@ -58,7 +58,7 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
         <span className="text-gray-300">{fileName}</span>
-        <input type="file" className="hidden" onChange={loadFile}/>
+        <input type="file" className="hidden" accept=".json" onChange={loadFile}/>
       </label>
     </form>
   )

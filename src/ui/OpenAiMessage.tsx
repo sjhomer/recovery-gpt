@@ -23,7 +23,7 @@ export const OpenAiMessage: React.FC<{ message: RenderedMessage }> = ({
           ? // User styles
           "group w-full text-gray-100 border-b border-gray-900/50 bg-gray-700"
           : // Assistant styles
-          "group w-full text-gray-100 dark:text-gray-100 border-b border-gray-900/50 bg-slate-600"
+          "group w-full text-gray-100 border-b border-gray-900/50 bg-slate-800"
       }
     >
       <div

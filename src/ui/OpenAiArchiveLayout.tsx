@@ -14,7 +14,7 @@ function OpenAiArchiveLayout({files, loadFile}: ConversationArchiveProps) {
   const [conversations, setConversations] = useState<Conversations>([])
   const [links, setLinks] = useState<OpenAiSidebarLink[]>([])
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null)
-  const [fileName, setFileName] = useState("Select a file")
+  const [fileName, setFileName] = useState("Select a 'conversions.json' to review")
 
   const handleFileChange = (fileData: Conversations) => {
     setConversations(fileData)
@@ -47,7 +47,7 @@ function OpenAiArchiveLayout({files, loadFile}: ConversationArchiveProps) {
 
   return (<>
       <div className="overflow-hidden w-full h-screen relative flex z-0 bg-gray-700">
-        {conversations.length && <OpenAiSidebar selection={UploadButton} links={links} onLinkClick={handleLinkClick}/>}
+        {conversations.length > 0 && <OpenAiSidebar selection={UploadButton} links={links} onLinkClick={handleLinkClick}/>}
         <div className="relative flex h-full max-w-full flex-1 overflow-hidden text-white">
           <div className="flex h-full max-w-full flex-1 flex-col">
             <main className="relative h-full w-full transition-width flex flex-col overflow-auto items-stretch flex-1">

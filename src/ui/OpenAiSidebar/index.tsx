@@ -107,7 +107,7 @@ export const OpenAiSidebar = ({
                       return (
                         <div
                           key={`${date}-${index}`}
-                             className={`${isExpanded ? "bg-gray-700" : ""} py-1 border-b-2 border-b-gray-800 hover:bg-gray-700`}
+                             className={`${isExpanded ? "bg-gray-800" : ""} py-1 border-b-2 border-b-gray-800 hover:bg-gray-800`}
                         >
                           <div
                             id={`date-${date}`} // Unique ID for scrolling
