@@ -1,78 +1,15 @@
 import React, {useCallback, useEffect, useLayoutEffect, useRef} from "react"
 import hljs from "highlight.js"
-import {OpenAiMessage} from "./OpenAiMessage"
-import {useInterval} from "usehooks-ts"
+import {Message} from "./Message"
 import {convertUnixTimestampToDate} from "@/lib"
 
-type AuthorRole = "system" | "user" | "assistant";
-
-interface Author {
-  role: AuthorRole;
-  name: null;
-  metadata: Record<string, unknown>;
-}
-
-interface Content {
-  content_type: string;
-  parts: string[];
-}
-
-interface Message {
-  id: string;
-  author: Author;
-  create_time: number;
-  update_time: number | null;
-  content: Content;
-  status: string;
-  end_turn: boolean | null;
-  weight: number;
-  metadata: Record<string, unknown>;
-  recipient: string;
-}
-
-type MappingEntry = {
-  id: string;
-  message: Message | null;
-  parent: string | null;
-  children: string[];
-}
-
-interface Mapping {
-  [key: string]: MappingEntry;
-}
-
-export interface Conversation {
-  title: string;
-  create_time: number;
-  update_time: number;
-  mapping: Mapping;
-  moderation_results: unknown[];
-  current_node: string;
-  plugin_ids: null;
-  id: string;
-}
-
-export type Conversations = Conversation[];
-
-interface ConversationListProps {
-  conversations: Conversations;
-}
-
-interface RenderedMessage {
-  author: string;
-  text: string;
-  create_time: number;
-}
-
-interface ConversationPaneProps {
-  activeConversation: Conversation | null;
-}
-
-function OpenAiContentPane({activeConversation}: ConversationPaneProps) {
+function ContentPanel({activeConversation}: RecoveryGPT.ConversationPaneProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   const renderMessage = useCallback(
-    (message: Message, role: AuthorRole, authorName: string): RenderedMessage | null => {
+    (message: RecoveryGPT.Message,
+      role: RecoveryGPT.AuthorRole,
+      authorName: string): RecoveryGPT.RenderedMessage | null => {
       if (
         message.author.role === role &&
         message.content &&
@@ -92,11 +29,11 @@ function OpenAiContentPane({activeConversation}: ConversationPaneProps) {
   )
 
   const getConversationMessages = useCallback(
-    (conversation: Conversation): RenderedMessage[] => {
-      const messages: RenderedMessage[] = []
+    (conversation: RecoveryGPT.Conversation): RecoveryGPT.RenderedMessage[] => {
+      const messages: RecoveryGPT.RenderedMessage[] = []
       let currentNode: string | null = conversation.current_node
       while (currentNode != null) {
-        const node: MappingEntry = conversation.mapping[currentNode]
+        const node: RecoveryGPT.MappingEntry = conversation.mapping[currentNode]
         if (node.message && node.message.author.role !== "system") {
           const userMessage = renderMessage(node.message, "user", "User")
           const assistantMessage = renderMessage(node.message, "assistant", "ChatGPT")
@@ -138,18 +75,18 @@ function OpenAiContentPane({activeConversation}: ConversationPaneProps) {
       </div>
       <div className="content">
         {messages?.map((message, j) => (
-          <OpenAiMessage key={j} message={message}/>
+          <Message key={j} message={message}/>
         ))}
       </div>
     </div>
 
   // Scroll to top when activeConversation changes
   useEffect(() => {
-    const container = ref.current;
-    if(container) {
-      container.scrollIntoView({ behavior: 'smooth' });
+    const container = ref.current
+    if (container) {
+      container.scrollIntoView({behavior: "smooth"})
     }
-  }, [activeConversation]);
+  }, [activeConversation])
 
   useLayoutEffect(() => {
     // If there are any code blocks missing 'hljs' classes, highlight them
@@ -168,4 +105,4 @@ function OpenAiContentPane({activeConversation}: ConversationPaneProps) {
   )
 }
 
-export default OpenAiContentPane
+export default ContentPanel

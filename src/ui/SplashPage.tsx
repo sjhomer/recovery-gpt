@@ -1,6 +1,5 @@
 "use client"
-import React from "react"
-import {Alert, AlertTitle,} from "@/components/ui/alert"
+import {Alert, AlertTitle,} from "@/components/shadcn/alert"
 import {
   ArrowRightFromLine,
   BadgeInfo,

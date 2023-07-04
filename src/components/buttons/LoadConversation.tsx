@@ -1,15 +1,14 @@
 import React, {ChangeEvent, FormEvent, useState} from "react"
-import {Conversations} from "@/ui/OpenAiContentPane"
 import {convertUnixTimestampToDate} from "@/lib"
 
 interface FileFormProps {
-  handleFileChange: (fileData: Conversations, filename: string) => void;
+  handleFileChange: (fileData: RecoveryGPT.Conversations, filename: string) => void;
   fileName: string;
   setFileName:  React.Dispatch<React.SetStateAction<string>>;
 }
 
 const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, setFileName}) => {
-  const [fileContent, setFileContent] = useState<Conversations>([])
+  const [fileContent, setFileContent] = useState<RecoveryGPT.Conversations>([])
 
   const loadFile = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -17,7 +16,7 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
       const reader = new FileReader()
       reader.onload = (e) => {
         const contents = e.target?.result as string
-        const parsedFileData = JSON.parse(contents) as Conversations
+        const parsedFileData = JSON.parse(contents) as RecoveryGPT.Conversations
         setFileContent(parsedFileData)
         const filename = generateFilename(parsedFileData)
         handleFileChange(parsedFileData, filename)
@@ -38,7 +37,7 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
   }
 
 
-  const generateFilename = (parsedFileData: Conversations) => {
+  const generateFilename = (parsedFileData: RecoveryGPT.Conversations) => {
     const firstConversation = parsedFileData[0]
     if (firstConversation && firstConversation.create_time) {
       const unixTimestamp = firstConversation.create_time

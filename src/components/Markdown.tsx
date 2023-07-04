@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown"
 import rehypeRaw from "rehype-raw"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
-import {CopyToClipboard} from "@/ui/CopyToClipboard"
+import {CopyToClipboard} from "@/components/buttons/CopyToClipboard"
 import {generateRandomString, programmingLanguages} from "@/lib"
 import {DownloadIcon} from "lucide-react"
 
@@ -15,8 +15,32 @@ interface CodeProps {
 }
 
 const components = {
+  h1({children}: { children: React.ReactNode }) {
+    return <h1 className="text-3xl">{children}</h1>
+  },
+  h2({children}: { children: React.ReactNode }) {
+    return <h2 className="text-2xl">{children}</h2>
+  },
+  h3({children}: { children: React.ReactNode }) {
+    return <h3 className="text-xl">{children}</h3>
+  },
+  h4({children}: { children: React.ReactNode }) {
+    return <h4 className="text-lg">{children}</h4>
+  },
+  h5({children}: { children: React.ReactNode }) {
+    return <h5 className="text-md">{children}</h5>
+  },
+  h6({children}: { children: React.ReactNode }) {
+    return <h6 className="text-sm">{children}</h6>
+  },
+  ol({children}: { children: React.ReactNode }) {
+    return <ol className="list-decimal list-inside m-0 leading-8 whitespace-normal">{children}</ol>
+  },
+  ul({children}: { children: React.ReactNode }) {
+    return <ul className="list-disc list-outside pl-4 leading-8 whitespace-normal">{children}</ul>
+  },
   p({children}: { children: React.ReactNode }) {
-    return <p className="mb-2 last:mb-0">{children}</p>
+    return <p className="">{children}</p>
   },
   code({node, inline, className, children, ...props}: CodeProps) {
     const match = /language-(\w+)/.exec(className || "")
@@ -72,7 +96,7 @@ const components = {
               <span className="sr-only">Download</span>
             </button>
             <CopyToClipboard
-              className={{container: "relative mt-0 right-6 top-0 lg:top-0 md:right-6 lg:pl-1", tooltip: "w-40"}}
+              className={{container: "relative mt-0 right-6 top-0 lg:top-0 md:right-6 lg:pl-1", tooltip: "w-52"}}
               contentToCopy={fileContents}
               contentType={"Code"}
             />
@@ -93,7 +117,7 @@ interface RenderedMessage {
   text: string;
 }
 
-export const MarkdownCodeSnippets: React.FC<{ message: RenderedMessage }> = ({
+export const Markdown: React.FC<{ message: RenderedMessage }> = ({
   message,
 }) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -114,7 +138,7 @@ export const MarkdownCodeSnippets: React.FC<{ message: RenderedMessage }> = ({
   let markdownContent = isUser ? codeToPre(message.text) : message.text
 
   return <ReactMarkdown
-    className="markdown prose w-full break-words dark:prose-invert light"
+    className="markdown prose w-full break-words dark:prose-invert light flex flex-col gap-4"
     // @ts-ignore
     components={components}
     rehypePlugins={[rehypeRaw, remarkMath, remarkGfm]}

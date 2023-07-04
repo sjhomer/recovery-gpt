@@ -1,11 +1,15 @@
 import {MessageSquare} from "lucide-react"
-import React from "react"
-import {OpenAiSidebarLink} from "@/ui/OpenAiSidebar"
 import {useWindowSize} from "usehooks-ts"
+
+export interface SidebarLink {
+  label: string;
+  url: string;
+  date: number;
+}
 
 interface SidebarLinksProps {
   className: string;
-  links: OpenAiSidebarLink[];
+  links: SidebarLink[];
   onLinkClick: (id: string) => void;
   toggleSidebar: () => void;
   activeLink: string;

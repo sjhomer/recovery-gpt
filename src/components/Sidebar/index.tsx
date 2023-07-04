@@ -1,31 +1,27 @@
 import React, {useEffect, useMemo, useState} from "react"
-import {SidebarToggle} from "@/ui/OpenAiSidebar/SidebarToggle"
-import {SidebarLinks} from "@/ui/OpenAiSidebar/SidebarLinks"
+import {SidebarToggle} from "./SidebarToggle"
+import {SidebarLink, SidebarLinks} from "./SidebarLinks"
 import {ChevronDown, ChevronUp} from "lucide-react"
 import {getWeekNumber} from "@/lib"
 
-export interface OpenAiSidebarLink {
-  label: string;
-  url: string;
-  date: number;
-}
+export type {SidebarLink}
 
-interface OpenAiSidebarProps {
+interface SidebarProps {
   selection: JSX.Element;
-  links: OpenAiSidebarLink[];
+  links: SidebarLink[];
   onLinkClick: (id: string) => void; // <-- New prop
 }
 
-export const OpenAiSidebar = ({
+export const Sidebar = ({
   selection,
   links,
   onLinkClick
-}: OpenAiSidebarProps) => {
+}: SidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [activeLink, setActiveLink] = useState("")
 
   const groupedLinks = useMemo(() => {
-    return links.reduce((groups: { [date: string]: { [week: string]: OpenAiSidebarLink[] } }, link) => {
+    return links.reduce((groups: { [date: string]: { [week: string]: SidebarLink[] } }, link) => {
       const date = new Date(link.date * 1000)
       const monthYear = `${date.toLocaleString("default", {month: "short"})} ${date.getFullYear()}`
       const week = `${getWeekNumber(date)}`

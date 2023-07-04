@@ -1,5 +1,3 @@
-import React from "react"
-
 export const SidebarToggle: React.FC<{isSidebarOpen:boolean, toggleSidebar: ()=>void}> = ({isSidebarOpen,toggleSidebar}) => {
   return <a
     className={isSidebarOpen ? "bg-gray-900 flex p-3 gap-3 transition-colors duration-200 text-white cursor-pointer text-sm rounded-md border border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center" : "bg-gray-900 fixed top-2 left-2 flex p-3 gap-3 transition-colors duration-200 text-white cursor-pointer text-sm rounded-md border border-white/20 hover:bg-gray-900/90 h-11 w-11 flex-shrink-0 items-center justify-center z-[999]"}

@@ -1,5 +1,3 @@
-import React from "react"
-
 export const OpenAiChatImage = () => {
   return <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg"
               strokeWidth="1.5" className="h-6 w-6" role="img"><title>ChatGPT</title>

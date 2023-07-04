@@ -1,13 +1,13 @@
-import OpenAiAvatar from "./OpenAiAvatar"
-import {CopyToClipboard} from "@/ui/CopyToClipboard"
-import {MarkdownCodeSnippets} from "@/ui/MarkdownCodeSnippets"
+import Avatar from "./icons/Avatar"
+import {CopyToClipboard} from "@/components/buttons/CopyToClipboard"
+import {Markdown} from "@/components/Markdown"
 
 interface RenderedMessage {
   author: string;
   text: string;
 }
 
-export const OpenAiMessage: React.FC<{ message: RenderedMessage }> = ({
+export const Message: React.FC<{ message: RenderedMessage }> = ({
   message,
 }) => {
   let isUser = /user/i.test(message.author)
@@ -29,7 +29,7 @@ export const OpenAiMessage: React.FC<{ message: RenderedMessage }> = ({
             <div className="relative flex">
               <span
                 className="box-border inline-block overflow-hidden w-initial h-initial bg-none opacity-100 border-0 m-0 p-0 relative max-w-full">
-                <OpenAiAvatar name={message.author}/>
+                <Avatar name={message.author}/>
               </span>
             </div>
           </div>
@@ -41,7 +41,7 @@ export const OpenAiMessage: React.FC<{ message: RenderedMessage }> = ({
             </div>
             <div
               className="min-h-[20px] flex items-start overflow-x-auto whitespace-pre-wrap break-words flex-col gap-4">
-              <MarkdownCodeSnippets message={message}/>
+              <Markdown message={message}/>
             </div>
           </div>
         </div>

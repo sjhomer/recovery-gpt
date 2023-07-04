@@ -1,11 +1,10 @@
-import React from "react";
-import {OpenAiChatImage} from "@/ui/OpenAiChatImage"
+import {OpenAiChatImage} from "./OpenAiChatImage"
 
 interface AvatarProps {
   name: string;
 }
 
-const OpenAiAvatar: React.FC<AvatarProps> = ({ name }) => {
+const Avatar: React.FC<AvatarProps> = ({ name }) => {
   const isUser = /user/i.test(name) ? "U" : null
 
   // Determine the background color based on the initial
@@ -18,4 +17,4 @@ const OpenAiAvatar: React.FC<AvatarProps> = ({ name }) => {
   );
 };
 
-export default OpenAiAvatar;
+export default Avatar;

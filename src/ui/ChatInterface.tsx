@@ -1,29 +1,24 @@
 "use client"
 import React, {useState} from "react"
-import OpenAiContentPane, {Conversation, Conversations} from "./OpenAiContentPane"
-import {OpenAiSidebar, OpenAiSidebarLink} from "./OpenAiSidebar"
-import LoadConversation from "@/ui/LoadConversation"
-import SplashPage from "@/ui/SplashPage"
+import ContentPanel from "@/components/ContentPanel"
+import {Sidebar, SidebarLink} from "@/components/Sidebar"
+import LoadConversation from "@/components/buttons/LoadConversation"
+import SplashPage from "./SplashPage"
 
-interface ConversationArchiveProps {
-  files?: string[];
-  loadFile: (file: string) => Promise<string>;
-}
-
-function OpenAiArchiveLayout({files, loadFile}: ConversationArchiveProps) {
-  const [conversations, setConversations] = useState<Conversations>([])
-  const [links, setLinks] = useState<OpenAiSidebarLink[]>([])
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null)
+function ChatInterface() {
+  const [conversations, setConversations] = useState<RecoveryGPT.Conversations>([])
+  const [links, setLinks] = useState<SidebarLink[]>([])
+  const [activeConversation, setActiveConversation] = useState<RecoveryGPT.Conversation | null>(null)
   const [fileName, setFileName] = useState("Select a 'conversions.json' to review")
 
-  const handleFileChange = (fileData: Conversations) => {
+  const handleFileChange = (fileData: RecoveryGPT.Conversations) => {
     setConversations(fileData)
     setActiveConversation(fileData[0] || null) // <--- Set the first conversation as active
 
     // loop through the fileData to get the links
-    let links: OpenAiSidebarLink[] = []
+    let links: SidebarLink[] = []
     fileData.forEach((conversation) => {
-      const conversationLink: OpenAiSidebarLink = {
+      const conversationLink: SidebarLink = {
         label: conversation.title,
         url: conversation.id,
         date: conversation.create_time,
@@ -47,13 +42,13 @@ function OpenAiArchiveLayout({files, loadFile}: ConversationArchiveProps) {
 
   return (<>
       <div className="overflow-hidden w-full h-screen relative flex z-0 bg-gray-700">
-        {conversations.length > 0 && <OpenAiSidebar selection={UploadButton} links={links} onLinkClick={handleLinkClick}/>}
+        {conversations.length > 0 && <Sidebar selection={UploadButton} links={links} onLinkClick={handleLinkClick}/>}
         <div className="relative flex h-full max-w-full flex-1 overflow-hidden text-white">
           <div className="flex h-full max-w-full flex-1 flex-col">
             <main className="relative h-full w-full transition-width flex flex-col overflow-auto items-stretch flex-1">
               <div className="absolute right-4 top-2 z-10 hidden flex-col gap-2 md:flex"></div>
               <div className="flex-1 overflow-y-scroll">
-                {conversations.length ? <OpenAiContentPane activeConversation={activeConversation}/> :
+                {conversations.length ? <ContentPanel activeConversation={activeConversation}/> :
                   <SplashPage action={UploadButton}/>}
               </div>
             </main>
@@ -64,4 +59,4 @@ function OpenAiArchiveLayout({files, loadFile}: ConversationArchiveProps) {
   )
 }
 
-export default OpenAiArchiveLayout
+export default ChatInterface
