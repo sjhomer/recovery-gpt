@@ -4,12 +4,11 @@ import {Alert, AlertTitle,} from "@/components/ui/alert"
 import {
   ArrowRightFromLine,
   BadgeInfo,
-  FacebookIcon, Flag,
-  LifeBuoy,
+  FacebookIcon,
+  Flag,
   LinkedinIcon,
   LucideMail,
   Share,
-  Sticker,
   TwitterIcon
 } from "lucide-react"
 import {ShareBlockStandard, ShareButtonCircle} from "react-custom-share"
@@ -32,16 +31,22 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
     <div className="flex justify-center w-screen h-screen text-lg">
       <div
         className="flex flex-col gap-4 w-full max-w-[800px] lg:my-auto px-8 py-12 bg-gray-800 shadow-md rounded-md text-white overflow-y-scroll">
-        <h1 className="text-3xl font-semibold flex items-center gap-2"><LifeBuoy/> RecoveryGPT</h1>
+        <h1 className="text-3xl font-semibold flex items-center gap-2">🛟 RecoveryGPT</h1>
         <h3 className="text-xl font-medium">Revive your ChatGPT conversations with elegance and full privacy!</h3>
         <p className="text-gray-300">
           Tired of the lacking user-friendly approach of default ChatGPT exports? RecoveryGPT empowers you
           to <strong>privately</strong> access your past conversations and <strong>review them seamlessly</strong> in a
           ChatGPT inspired UI.
           <ul className="list-disc pl-4 mt-4 space-y-4 leading-snug">
-            <li><strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking, and fully functional offline.</li>
-            <li><strong>Convenient</strong> - Enhanced usability allows you to review your old conversations more intuitively than in the ChatGPT interface.</li>
-            <li><strong>Effortless Recovery</strong> - In-built copy buttons enable you to retrieve your past text or code snippets with just one click.</li>
+            <li><strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking,
+              and fully functional offline.
+            </li>
+            <li><strong>Convenient</strong> - Enhanced usability allows you to review your old conversations more
+              intuitively than in the ChatGPT interface.
+            </li>
+            <li><strong>Effortless Recovery</strong> - In-built copy buttons enable you to retrieve your past text or
+              code snippets with just one click.
+            </li>
           </ul>
         </p>
         <h4 className="text-2xl  flex items-center gap-2"><Flag/> Start reviewing your conversations!</h4>
@@ -59,7 +64,8 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
         </p>
         <Alert className="bg-green-700 text-slate-200 border-green-700 lg:text-justify">
           <BadgeInfo className="h-5 w-5 stroke-slate-200 mt-1"/>
-          <AlertTitle className="leading-normal">Note! You must load a <code>conversation.json</code> file from one of your exports.</AlertTitle>
+          <AlertTitle className="leading-normal">Note! You must load a <code>conversation.json</code> file from one of
+            your exports.</AlertTitle>
         </Alert>
         <h5 className="text-2xl flex items-center gap-2"><Share/> Share RecoveryGPT with others!</h5>
         <p className="text-gray-300 ">

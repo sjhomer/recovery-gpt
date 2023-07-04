@@ -29,7 +29,10 @@
     "react-custom-share": "^0.4.8",
     "react-dom": "18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-markdown": "^8.0.7",
     "react-scroll": "^1.8.9",
+    "react-syntax-highlighter": "^15.5.0",
+    "rehype-raw": "^6.1.1",
     "tailwind-merge": "^1.13.2",
     "tailwindcss": "3.3.2",
     "tailwindcss-animate": "^1.0.6",
@@ -38,6 +41,7 @@
   },
   "devDependencies": {
     "@types/marked": "^5.0.0",
-    "@types/react-scroll": "^1.8.7"
+    "@types/react-scroll": "^1.8.7",
+    "@types/react-syntax-highlighter": "^15.5.7"
   }
 }
