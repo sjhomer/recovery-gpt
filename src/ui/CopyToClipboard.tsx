@@ -7,14 +7,15 @@ interface OpenAiCopyButtonProps {
     container?: string;
     tooltip?: string;
   };
-  text: string;
+  contentToCopy: string;
+  contentType?: "Content" | "Code";
 }
 
-export const OpenAiCopyButton: React.FC<OpenAiCopyButtonProps> = ({className, text}) => {
+export const CopyToClipboard: React.FC<OpenAiCopyButtonProps> = ({className, contentToCopy, contentType = 'Content'}) => {
   const [copied, setCopied] = useState(false)
 
   const clickHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard.writeText(contentToCopy)
     setCopied(true)
 
     // Reset the copied state after 3 seconds
@@ -41,9 +42,9 @@ export const OpenAiCopyButton: React.FC<OpenAiCopyButtonProps> = ({className, te
       {copied && (
         <div
           className={cn(
-            "absolute bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md text-xs top-7 right-0 w-32",
+            "absolute bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md text-xs top-7 right-0 w-48 text-center",
             className?.tooltip)}>
-          Copied to clipboard
+          {contentType} copied to clipboard!
         </div>
       )}
     </div>

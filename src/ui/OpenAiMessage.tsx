@@ -1,5 +1,5 @@
 import OpenAiAvatar from "./OpenAiAvatar"
-import {OpenAiCopyButton} from "@/ui/OpenAiCopyButton"
+import {CopyToClipboard} from "@/ui/CopyToClipboard"
 import {MarkdownCodeSnippets} from "@/ui/MarkdownCodeSnippets"
 
 interface RenderedMessage {
@@ -37,7 +37,7 @@ export const OpenAiMessage: React.FC<{ message: RenderedMessage }> = ({
         <div className="relative flex w-[calc(100%-50px)] flex-col gap-1 md:gap-3 lg:w-[calc(100%-115px)]">
           <div className="flex flex-grow flex-col gap-3">
             <div className="flex justify-between lg:block">
-              <OpenAiCopyButton text={message.text}/>
+              <CopyToClipboard contentToCopy={message.text}/>
             </div>
             <div
               className="min-h-[20px] flex items-start overflow-x-auto whitespace-pre-wrap break-words flex-col gap-4">

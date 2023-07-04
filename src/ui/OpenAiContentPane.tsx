@@ -153,7 +153,7 @@ function OpenAiContentPane({activeConversation}: ConversationPaneProps) {
 
   useLayoutEffect(() => {
     // If there are any code blocks missing 'hljs' classes, highlight them
-    const codeBlocks = ref.current?.querySelectorAll("div:not(.markdown-codeblock) code:not(.hljs)")
+    const codeBlocks = ref.current?.querySelectorAll("code:not(.hljs)")
     if (codeBlocks) {
       codeBlocks.forEach((block) => {
         hljs.highlightElement(block as HTMLElement)
