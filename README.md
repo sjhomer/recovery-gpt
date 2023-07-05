@@ -1,4 +1,7 @@
 # 🛟 RecoveryGPT
+
+https://github.com/sjhomer/recovery-gpt/assets/76261430/4844242a-55c0-4f11-ac8d-78b937b88c6a
+
 ## Revive your ChatGPT conversations with elegance and full privacy!
 
 Tired of the lacking user-friendly approach of default ChatGPT exports? RecoveryGPT empowers you to **privately** access your past conversations and **review them seamlessly** in a ChatGPT inspired UI.
