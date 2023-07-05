@@ -202,3 +202,7 @@ table {
 .sidebarShare button:hover .lucide-mail {
   fill: transparent;
 }
+
+ol li p {
+  display: inline;
+}

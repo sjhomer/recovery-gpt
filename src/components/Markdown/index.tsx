@@ -32,13 +32,13 @@ const components = {
     return <h6 className="text-sm">{children}</h6>
   },
   ol({children}: { children: React.ReactNode }) {
-    return <ol className="list-decimal list-inside m-0 leading-8 whitespace-normal">{children}</ol>
+    return <ol className="list-decimal list-inside m-0 leading-8 space-y-2 whitespace-normal">{children}</ol>
   },
   ul({children}: { children: React.ReactNode }) {
-    return <ul className="list-disc list-outside pl-4 leading-8 whitespace-normal">{children}</ul>
+    return <ul className="list-disc list-outside pl-4 leading-8 space-y-2 whitespace-normal">{children}</ul>
   },
   p({children}: { children: React.ReactNode }) {
-    return <p className="">{children}</p>
+    return <p>{children}</p>
   },
   code({node, inline, className, children, ...props}: CodeProps) {
     // Attempt to get the language of the codeblock
