@@ -37,7 +37,7 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
           to <strong>privately</strong> access your past conversations and <strong>review them seamlessly</strong> in a
           ChatGPT inspired UI.
         </p>
-        <ul className="list-disc pl-4 mt-4 space-y-4 leading-snug">
+        <ul className="list-disc pl-4 space-y-4 leading-snug">
           <li>🔐<strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking,
             and fully functional offline.
           </li>
