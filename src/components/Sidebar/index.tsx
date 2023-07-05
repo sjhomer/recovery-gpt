@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react"
+import React, {useCallback, useEffect, useMemo, useState} from "react"
 import {SidebarToggle} from "./SidebarToggle"
 import {SidebarLink, SidebarLinks} from "./SidebarLinks"
 import {ChevronDown, ChevronUp} from "lucide-react"
@@ -39,13 +39,15 @@ export const Sidebar = ({
     }, {})
   }, [links])
 
-  const [expandedDates, setExpandedDates] = useState<string[]>(() => {
+  const [expandedDates, setExpandedDates] = useState<string[]>([])
+
+  useEffect(() => {
     // Pick from th groupedLinks the first date and week, i.e. `${monthYear} ${week}`
     const firstDate = Object.keys(groupedLinks)[0]
     // Weeks happen to pool backwards, so we need to pick the last week
     const firstWeek = Object.keys(groupedLinks[firstDate]).pop()
-    return [`${firstDate}-${firstWeek}`]
-  })
+    setExpandedDates([`${firstDate}-${firstWeek}`])
+  }, [groupedLinks])
 
   const toggleDate = (date: string) => {
     setExpandedDates(prevDates => {

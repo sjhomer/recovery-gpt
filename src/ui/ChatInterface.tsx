@@ -13,14 +13,14 @@ function ChatInterface() {
   let hasContent = conversations.length > 0
 
   const handleFileChange = useCallback((fileData: RecoveryGPT.Conversations) => {
-    setConversations(fileData)
-    setActiveConversation(fileData[0] || null)
-
     const links: SidebarLink[] = fileData.map((conversation) => ({
       label: conversation.title,
       url: conversation.id,
       date: conversation.create_time,
     }))
+
+    setConversations(fileData)
+    setActiveConversation(fileData[0] || null)
     setLinks(links)
   }, [])
 
