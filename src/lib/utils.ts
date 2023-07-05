@@ -25,7 +25,7 @@ interface languageMap {
   [key: string]: string | undefined
 }
 
-export const programmingLanguages: languageMap = {
+export const languageFileTypes: languageMap = {
   javascript: '.js',
   python: '.py',
   java: '.java',
@@ -52,6 +52,8 @@ export const programmingLanguages: languageMap = {
   // add more file extensions here, make sure the key is same as language prop in CodeBlock.tsx component
 }
 
+export const programmingLanguages = Object.keys(languageFileTypes)
+
 export const generateRandomString = (length: number, lowercase = false) => {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXY3456789' // excluding similar looking characters like Z, 2, I, 1, O, 0
   let result = ''
@@ -59,4 +61,28 @@ export const generateRandomString = (length: number, lowercase = false) => {
     result += chars.charAt(Math.floor(Math.random() * chars.length))
   }
   return lowercase ? result.toLowerCase() : result
+}
+
+export const downloadAsFile = (filename: string, fileContents: string) => {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const downloadFileName = window.prompt('Enter file name' || '', filename)
+
+  if (!downloadFileName) {
+    // User pressed cancel on prompt.
+    return
+  }
+
+  const blob = new Blob([fileContents], { type: 'text/plain' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.download = downloadFileName
+  link.href = url
+  link.style.display = 'none'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
 }
