@@ -38,13 +38,13 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
           ChatGPT inspired UI.
         </p>
         <ul className="list-disc pl-4 mt-4 space-y-4 leading-snug">
-          <li><strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking,
+          <li>🔐<strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking,
             and fully functional offline.
           </li>
-          <li><strong>Convenient</strong> - Enhanced usability allows you to review your old conversations more
+          <li>😌<strong>Convenient</strong> - Enhanced usability allows you to review your old conversations more
             intuitively than in the ChatGPT interface.
           </li>
-          <li><strong>Effortless Recovery</strong> - In-built copy buttons enable you to retrieve your past text or
+          <li>🏄<strong>Effortless Recovery</strong> - In-built copy buttons enable you to retrieve your past text or
             code snippets with just one click.
           </li>
         </ul>
@@ -54,7 +54,7 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
           Just hit the button to get started! You can effortlessly switch between files from the sidebar anytime you
           want.
         </p>
-        <h4 className="text-2xl  flex items-center gap-2"><ArrowRightFromLine/> Getting Your Exported Data</h4>
+        <h4 className="text-2xl  flex items-center gap-2">📚 Getting Your Exported Data</h4>
         <p className="text-gray-300 ">
           Exporting your data from ChatGPT is simple. Follow <a className="underline"
           href="https://help.openai.com/en/articles/7260999-how-do-i-export-my-chatgpt-history-and-data"

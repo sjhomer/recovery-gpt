@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   },
   creator: "SJ Homer",
   colorScheme: "dark",
-  icons: "/ringbouy.svg",
 }
 
 export default function RootLayout({

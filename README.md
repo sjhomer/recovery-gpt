@@ -1,14 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🛟 RecoveryGPT
+## Revive your ChatGPT conversations with elegance and full privacy!
+
+Tired of the lacking user-friendly approach of default ChatGPT exports? RecoveryGPT empowers you to **privately** access your past conversations and **review them seamlessly** in a ChatGPT inspired UI.
+
+- 🔐 **Secure** - Operates with total respect for your privacy. No file uploads, no tracking, and fully functional offline.
+- 😌 **Convenient** - Enhanced usability allows you to review your old conversations more intuitively than in the ChatGPT interface.
+- 🏄🏻 **Effortless Recovery** - In-built copy buttons enable you to retrieve your past text or code snippets with just one click.
+
+## Start reviewing your data
+
+Head on over to [RecoveryGTP](https://recovery-gpt.vercel.app/) to get started!
+
+## 📚 Getting Your Exported Data
+
+Exporting your data from ChatGPT is simple. Follow [OpenAI's step-by-step guide](https://help.openai.com/en/articles/7260999-how-do-i-export-my-chatgpt-history-and-data). After that, unzip the downloaded file and choose it below.
+
+> ℹ️ **Note!** You must load a `conversation.json` file from one of your exports.
+
+## <Share/> Share RecoveryGPT with others!
+
+Think this tool might be helpful for someone you know? Please spread the word!
+
+Check out the project on [GitHub](https://github.com/sjhomer/recovery-gpt){:target="_blank"} to explore the secure and open source codebase behind RecoveryGPT.
+
+## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). 🤘🏻
+
+# Want to run this project locally?
 
 ## Getting Started
+
+This project was built with:
+
+* Node v20.0.0
+* pnpm v8.6.2
+* [Next.js](https://www.npmjs.com/package/nextjs) v13.4.7
+* [shadcn/ui](https://ui.shadcn.com/) for some components
+* [react-markdown](https://www.npmjs.com/package/react-markdown) and plugins for markdown parsing
+
+```bash
+# install dependencies
+pnpm i
+```
 
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
 ```
 

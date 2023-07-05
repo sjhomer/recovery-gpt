@@ -41,5 +41,10 @@
   },
   "devDependencies": {
     "@types/marked": "^5.0.0"
+  },
+  "packageManager": "pnpm@8.6.2",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.6.2"
   }
 }
