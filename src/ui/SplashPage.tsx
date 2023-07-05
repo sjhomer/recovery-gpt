@@ -36,18 +36,18 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
           Tired of the lacking user-friendly approach of default ChatGPT exports? RecoveryGPT empowers you
           to <strong>privately</strong> access your past conversations and <strong>review them seamlessly</strong> in a
           ChatGPT inspired UI.
-          <ul className="list-disc pl-4 mt-4 space-y-4 leading-snug">
-            <li><strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking,
-              and fully functional offline.
-            </li>
-            <li><strong>Convenient</strong> - Enhanced usability allows you to review your old conversations more
-              intuitively than in the ChatGPT interface.
-            </li>
-            <li><strong>Effortless Recovery</strong> - In-built copy buttons enable you to retrieve your past text or
-              code snippets with just one click.
-            </li>
-          </ul>
         </p>
+        <ul className="list-disc pl-4 mt-4 space-y-4 leading-snug">
+          <li><strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking,
+            and fully functional offline.
+          </li>
+          <li><strong>Convenient</strong> - Enhanced usability allows you to review your old conversations more
+            intuitively than in the ChatGPT interface.
+          </li>
+          <li><strong>Effortless Recovery</strong> - In-built copy buttons enable you to retrieve your past text or
+            code snippets with just one click.
+          </li>
+        </ul>
         <h4 className="text-2xl  flex items-center gap-2"><Flag/> Start reviewing your conversations!</h4>
         <div className="mt-4 lg:w-1/2 mx-auto">{action}</div>
         <p className="text-gray-300">

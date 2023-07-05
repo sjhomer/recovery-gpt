@@ -41,9 +41,6 @@ dependencies:
   lucide-react:
     specifier: ^0.257.0
     version: 0.257.0(react@18.2.0)
-  marked:
-    specifier: ^5.1.0
-    version: 5.1.0
   next:
     specifier: 13.4.7
     version: 13.4.7(react-dom@18.2.0)(react@18.2.0)
@@ -2752,12 +2749,6 @@ packages:
 
   /markdown-table@3.0.3:
     resolution: {integrity: sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==}
-    dev: false
-
-  /marked@5.1.0:
-    resolution: {integrity: sha512-z3/nBe7aTI8JDszlYLk7dDVNpngjw0o1ZJtrA9kIfkkHcIF+xH7mO23aISl4WxP83elU+MFROgahqdpd05lMEQ==}
-    engines: {node: '>= 18'}
-    hasBin: true
     dev: false
 
   /mdast-util-definitions@5.1.2:
