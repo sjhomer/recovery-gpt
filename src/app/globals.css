@@ -192,3 +192,13 @@ table {
 .markdown td:last-child {
   border-right-width: 1px;
 }
+
+.sidebarShare button {
+  width: 30px;
+  height: 30px;
+}
+
+.sidebarShare button svg,
+.sidebarShare button:hover .lucide-mail {
+  fill: transparent;
+}

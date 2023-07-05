@@ -1,8 +1,9 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react"
+import React, {useEffect, useMemo, useState} from "react"
 import {SidebarToggle} from "./SidebarToggle"
 import {SidebarLink, SidebarLinks} from "./SidebarLinks"
 import {ChevronDown, ChevronUp} from "lucide-react"
 import {getWeekNumber} from "@/lib"
+import {ShareButtons} from "@/components/buttons/ShareButtons"
 
 export type {SidebarLink}
 
@@ -19,6 +20,7 @@ export const Sidebar = ({
 }: SidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [activeLink, setActiveLink] = useState("")
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false) // New state
 
   const groupedLinks = useMemo(() => {
     return links.reduce((groups: { [date: string]: { [week: string]: SidebarLink[] } }, link) => {
@@ -67,6 +69,7 @@ export const Sidebar = ({
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
+    setIsOverlayVisible(!isSidebarOpen) // Toggle overlay visibility
   }
 
   useEffect(() => {
@@ -79,69 +82,85 @@ export const Sidebar = ({
   return !isSidebarOpen ? (
     SidebarToggle({isSidebarOpen, toggleSidebar})
   ) : (
-    <div
-      className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 h-full border-r-2 border-r-white ${
-        isSidebarOpen ? "w-[260px]" : "w-60"
-      }`}
-    >
-      <div className="h-full">
-        <div className="flex h-full min-h-0 flex-col">
-          <div className="scrollbar-trigger relative h-full w-full flex-1 items-start border-white/20">
-            <h2 className="sr-only">Chat history</h2>
-            <nav className="flex h-full w-full flex-col p-2" aria-label="Chat history">
-              <div className="mb-1 flex flex-row gap-2 text-white">
-                {selection}
-                <span className="" data-state="closed">
+    <>
+      {/* Overlay */}
+      {isOverlayVisible && (
+        <div
+          className="fixed inset-0 bg-black opacity-40 z-40 md:hidden"
+          onClick={toggleSidebar} // Close sidebar when clicking overlay
+        ></div>
+      )}
+      <div
+        className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 h-full border-r-2 border-r-gray-500 ${
+          isSidebarOpen ? "w-[260px] z-50" : "w-60"
+        }`}
+      >
+        <div className="h-full">
+          <div className="flex h-full min-h-0 flex-col">
+            <div className="scrollbar-trigger relative h-full w-full flex-1 items-start border-white/20">
+              <h2 className="sr-only">Chat history</h2>
+              <nav className="flex h-full w-full flex-col pt-2 px-2 pb-0" aria-label="Chat history">
+                <div className="mb-1 flex flex-row gap-2 text-white">
+                  {selection}
+                  <span className="" data-state="closed">
                   <SidebarToggle isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
                 </span>
-              </div>
-              <div className="flex-col flex-1 transition-opacity duration-500 overflow-y-auto">
-                <div className="flex flex-col gap-2 pb-2 text-gray-100 text-sm">
-                  {Object.entries(groupedLinks).map(([monthYear, weeks]) => {
-                    return Object.entries(weeks).reverse().map(([week, links], index) => {
-                      let date = `${monthYear}-${week}`
-                      const isExpanded = expandedDates.includes(date)
-
-                      return (
-                        <div
-                          key={`${date}-${index}`}
-                             className={`${isExpanded ? "bg-gray-800" : ""} py-1 border-b-2 border-b-gray-800 hover:bg-gray-800`}
-                        >
-                          <div
-                            id={`date-${date}`} // Unique ID for scrolling
-                            className={` z-[16] overflow-hidden`}
-                          >
-                            <button
-                              className={` ${isExpanded ? "text-white font-bold" : "text-gray-500 font-normal"}} h-9 pb-4 pt-3 px-3 text-base font-medium text-ellipsis overflow-hidden break-all uppercase w-full flex items-center justify-between  hover:text-white `}
-                              onClick={() => toggleDate(date)}
-                            >
-                              {monthYear} &ndash; W{week} ({links.length})
-                              {isExpanded ? (
-                                <ChevronUp className="text-white"/>
-                              ) : (
-                                <ChevronDown className="text-gray-600"/>
-                              )}
-                            </button>
-                          </div>
-                          <SidebarLinks
-                            className={`${
-                              !isExpanded ? "-translate-x-full h-0 duration-0 overflow-hidden" : "duration-500"} transition-all `}
-                            links={links}
-                            onLinkClick={onLinkClick}
-                            toggleSidebar={toggleSidebar}
-                            activeLink={activeLink}
-                            setActiveLink={setActiveLink}
-                          />
-                        </div>
-                      )
-                    })
-                  })}
                 </div>
-              </div>
-            </nav>
+                <div className="flex-col flex-1 transition-opacity duration-500 overflow-y-auto">
+                  <div className="flex flex-col gap-1 pb-2 text-gray-100 text-sm">
+                    {Object.entries(groupedLinks).map(([monthYear, weeks]) => {
+                      return Object.entries(weeks).reverse().map(([week, links], index) => {
+                        let date = `${monthYear}-${week}`
+                        const isExpanded = expandedDates.includes(date)
+
+                        return (
+                          <div
+                            key={`${date}-${index}`}
+                            className={`${isExpanded ? "bg-gray-800" : ""} hover:bg-gray-800`}
+                          >
+                            <div
+                              id={`date-${date}`} // Unique ID for scrolling
+                              className={` z-[16] overflow-hidden`}
+                            >
+                              <button
+                                className={` ${isExpanded ? "text-white font-bold" : "text-gray-500 font-normal"}} h-9 p-3 text-base font-medium text-ellipsis overflow-hidden break-all uppercase w-full flex items-center justify-between  hover:text-white `}
+                                onClick={() => toggleDate(date)}
+                              >
+                                {monthYear} &ndash; W{week} ({links.length})
+                                {isExpanded ? (
+                                  <ChevronUp className="text-white"/>
+                                ) : (
+                                  <ChevronDown className="text-gray-600"/>
+                                )}
+                              </button>
+                            </div>
+                            <SidebarLinks
+                              className={`${
+                                !isExpanded ? "-translate-x-full h-0 duration-0 overflow-hidden" : "duration-500"} transition-all `}
+                              links={links}
+                              onLinkClick={onLinkClick}
+                              toggleSidebar={toggleSidebar}
+                              activeLink={activeLink}
+                              setActiveLink={setActiveLink}
+                            />
+                          </div>
+                        )
+                      })
+                    })}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-0 text-white items-center border-t-2 border-t-gray-700 pt-3">
+                  <span className="text-sm capitalize text-gray-300">Like it? Share it! 🙌🏻</span>
+                  <div className="sidebarShare">
+                    <ShareButtons as={'icon'}/>
+                  </div>
+                </div>
+              </nav>
+            </div>
+
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

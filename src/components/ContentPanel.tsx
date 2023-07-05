@@ -55,7 +55,7 @@ function ContentPanel({activeConversation}: RecoveryGPT.ConversationPaneProps) {
       id={`${activeConversation.id}`}
     >
       <div
-        className="titleSection sticky top-0 bg-slate-800 py-2 shadow"
+        className="titleSection sticky top-0 bg-slate-900 py-2"
         style={{zIndex: 1}}
       >
         <h4

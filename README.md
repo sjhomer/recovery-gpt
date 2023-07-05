@@ -27,7 +27,9 @@ Check out the project on [GitHub](https://github.com/sjhomer/recovery-gpt){:targ
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). 🤘🏻
 
-# Want to run this project locally?
+# Run RecoveryGPT locally
+
+Because of the File API usage, you can run RecoveryGPT locally, or offline, without any issues or worries!
 
 ## Getting Started
 

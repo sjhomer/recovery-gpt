@@ -1,31 +1,9 @@
 "use client"
 import {Alert, AlertTitle,} from "@/components/shadcn/alert"
-import {
-  ArrowRightFromLine,
-  BadgeInfo,
-  FacebookIcon,
-  Flag,
-  LinkedinIcon,
-  LucideMail,
-  Share,
-  TwitterIcon
-} from "lucide-react"
-import {ShareBlockStandard, ShareButtonCircle} from "react-custom-share"
+import {BadgeInfo, Flag, Share} from "lucide-react"
+import {ShareButtons} from "@/components/buttons/ShareButtons"
 
 const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
-  const shareBlockProps = {
-    url: "https://recovery-gpt.vercel.app/",
-    button: ShareButtonCircle,
-    buttons: [
-      {network: "Linkedin", icon: LinkedinIcon},
-      {network: "Twitter", icon: TwitterIcon},
-      {network: "Facebook", icon: FacebookIcon},
-      {network: "Email", icon: LucideMail},
-    ],
-    text: "RecoveryGPT - Revive your ChatGPT conversations with elegance and full privacy!",
-    longtext: "Tired of the lacking user-friendly approach of default ChatGPT exports? RecoveryGPT empowers you to privately access your past conversations and review them seamlessly in a ChatGPT inspired UI.",
-  }
-
   return (
     <div className="flex justify-center w-screen h-screen text-lg">
       <div
@@ -38,13 +16,13 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
           ChatGPT inspired UI.
         </p>
         <ul className="list-disc pl-4 space-y-4 leading-snug">
-          <li>🔐<strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking,
+          <li>🔐 <strong>Secure</strong> - Operates with total respect for your privacy. No file uploads, no tracking,
             and fully functional offline.
           </li>
-          <li>😌<strong>Convenient</strong> - Enhanced usability allows you to review your old conversations more
+          <li>😌 <strong>Convenient</strong> - Enhanced usability allows you to review your old conversations more
             intuitively than in the ChatGPT interface.
           </li>
-          <li>🏄<strong>Effortless Recovery</strong> - In-built copy buttons enable you to retrieve your past text or
+          <li>🏄 <strong>Effortless Recovery</strong> - In-built copy buttons enable you to retrieve your past text or
             code snippets with just one click.
           </li>
         </ul>
@@ -71,7 +49,7 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
           Think this tool might be helpful for someone you know? Use the share buttons below to spread the word!
         </p>
         <div className="flex justify-center gap-3 ">
-          <ShareBlockStandard {...shareBlockProps} />
+          <ShareButtons/>
         </div>
         <p className="text-gray-300 ">
           Check out the project on <a className="underline" href="https://github.com/sjhomer/recovery-gpt"
