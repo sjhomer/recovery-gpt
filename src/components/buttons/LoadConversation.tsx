@@ -29,11 +29,9 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
     }
   }
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault()
-
-    // Process the file content here
-    console.log(fileContent)
+  // Ignore submit, as everything is handled by the file input
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault()
   }
 
 
