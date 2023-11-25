@@ -99,7 +99,7 @@ function ContentPanel({activeConversation, display}: RecoveryGPT.ConversationPan
   }, [activeConversation])
 
   return (
-    <div ref={ref} className={`contentPane h-full dark:bg-gray-800 ${display ? "" : "hidden"}\`}`}>
+    <div ref={ref} className={`contentPane h-full dark:bg-gray-800 ${display ? "" : "hidden"}`}>
       {renderedActiveConversation}
     </div>
   )
