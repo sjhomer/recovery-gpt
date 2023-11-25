@@ -1,166 +1,150 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { SidebarToggle } from "./SidebarToggle";
-import { SidebarLink, SidebarLinks } from "./SidebarLinks";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { getWeekNumber } from "@/lib";
-import { ShareButtons } from "@/components/buttons/ShareButtons";
+import React, {useEffect, useMemo, useState} from "react"
+import {SidebarToggle} from "./SidebarToggle"
+import {SidebarLink} from "./SidebarLinks"
+import {getWeekNumber} from "@/lib"
+import SidebarOverlay from "@/components/Sidebar/SidebarOverlay"
+import SidebarContainer from "@/components/Sidebar/SidebarContainer"
+import SidebarHeader from "@/components/Sidebar/SidebarHeader"
+import ShareSection from "@/components/Sidebar/ShareSection"
+import GroupedLinks from "@/components/Sidebar/GroupedLinks"
+import Fuse from "fuse.js"
+import { useDebounce } from 'usehooks-ts'
 
-export type { SidebarLink };
+export type {SidebarLink}
 
 interface SidebarProps {
   selection: JSX.Element;
-  links: SidebarLink[];
   onLinkClick: (id: string) => void; // <-- New prop
+  conversations: RecoveryGPT.Conversations;
 }
 
 export const Sidebar = ({
-  selection,
-  links,
-  onLinkClick
+  selection, onLinkClick, conversations
 }: SidebarProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [activeLink, setActiveLink] = useState("");
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false); // New state
+  const [searchTerm, setSearchTerm] = useState("")
+  const debouncedSearchTerm = useDebounce(searchTerm, 500); // 500ms debounce
+
+  const filteredConversations = useMemo(() => {
+    if (!debouncedSearchTerm.trim()) return conversations
+
+    const fuse = new Fuse(conversations, {
+      keys: ["title",
+        {
+          name: 'mapping',
+          getFn: (item) => {
+            // Flatten the mapping into a searchable string or array of strings
+            return Object.values(item.mapping).map((mapItem) => {
+              // Example: combining the message content parts
+              // Adjust based on your searchable criteria
+              return mapItem.message?.content?.parts?.join(' ') || '';
+            });
+          }
+        }], // Adjust based on your data structure
+    })
+
+    const searchResults = fuse.search(debouncedSearchTerm).map(result => result.item)
+
+    console.log("Sidebar.tsx: filteredConversations", debouncedSearchTerm, searchResults)
+
+    return searchResults
+  }, [conversations, debouncedSearchTerm])
+
+  const onSearchChange = (newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm);
+  };
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [activeLink, setActiveLink] = useState("")
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false) // New state
+
+  const links: SidebarLink[] = useMemo(() => filteredConversations.map((conversation) => ({
+    label: conversation.title,
+    url: conversation.id,
+    date: conversation.create_time,
+  })), [filteredConversations])
 
   const groupedLinks = useMemo(() => {
     return links.reduce((groups: { [date: string]: { [week: string]: SidebarLink[] } }, link) => {
-      const date = new Date(link.date * 1000);
-      const monthYear = `${date.toLocaleString("default", { month: "short" })} ${date.getFullYear()}`;
-      const week = `${getWeekNumber(date)}`;
+      const date = new Date(link.date * 1000)
+      const monthYear = `${date.toLocaleString("default", {month: "short"})} ${date.getFullYear()}`
+      const week = `${getWeekNumber(date)}`
 
       if (!groups[monthYear]) {
-        groups[monthYear] = {};
+        groups[monthYear] = {}
       }
 
       if (!groups[monthYear][week]) {
-        groups[monthYear][week] = [];
+        groups[monthYear][week] = []
       }
 
-      groups[monthYear][week].push(link);
-      return groups;
-    }, {});
-  }, [links]);
+      groups[monthYear][week].push(link)
+      return groups
+    }, {}) || {}
+  }, [links])
 
-  const [expandedDates, setExpandedDates] = useState<string[]>([]);
+  const [expandedDates, setExpandedDates] = useState<string[]>([])
 
   useEffect(() => {
     // Pick from the groupedLinks the first date and week, i.e. `${monthYear} ${week}`
-    const firstDate = Object.keys(groupedLinks).reverse()[0];
+    const firstDate = Object.keys(groupedLinks)?.reverse()?.[0]
     // Weeks happen to pool backwards, so we need to pick the last week
-    const firstWeek = Object.keys(groupedLinks[firstDate]).reverse()[0];
-    setExpandedDates([`${firstDate}-${firstWeek}`]);
-  }, [groupedLinks]);
+    const firstWeek = groupedLinks[firstDate] && Object.keys(groupedLinks[firstDate]).reverse()[0]
+    setExpandedDates([`${firstDate}-${firstWeek}`])
+  }, [groupedLinks])
 
   const toggleDate = (date: string) => {
     setExpandedDates(prevDates => {
       if (prevDates.includes(date)) {
-        return prevDates.filter(prevDate => prevDate !== date);
+        return prevDates.filter(prevDate => prevDate !== date)
       } else {
-        return [...prevDates, date];
+        return [...prevDates, date]
       }
-    });
+    })
 
     // Scroll the sidebar to show the selected date at the top, if we're opening it, not closing
-    const dateElement = document.getElementById(`date-${date}`);
+    const dateElement = document.getElementById(`date-${date}`)
     if (dateElement && !expandedDates.includes(date)) {
-      dateElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      dateElement.scrollIntoView({behavior: "smooth", block: "start"})
     }
-  };
+  }
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-    setIsOverlayVisible(!isSidebarOpen); // Toggle overlay visibility
-  };
+    setIsSidebarOpen(!isSidebarOpen)
+    setIsOverlayVisible(!isSidebarOpen) // Toggle overlay visibility
+  }
 
   useEffect(() => {
     // Set the first link as active when the list loads
     if (links.length > 0) {
-      setActiveLink(links[0].url);
+      setActiveLink(links[0].url)
     }
-  }, [links]);
+  }, [links])
 
-  return !isSidebarOpen ? (
-    SidebarToggle({ isSidebarOpen, toggleSidebar })
-  ) : (
-    <>
-      {/* Overlay */}
-      {isOverlayVisible && (
-        <div
-          className="fixed inset-0 bg-black opacity-40 z-40 md:hidden"
-          onClick={toggleSidebar} // Close sidebar when clicking overlay
-        ></div>
-      )}
-      <div
-        className={`dark flex-shrink-0 overflow-x-hidden bg-gray-900 h-full border-r-2 border-r-gray-500 ${
-          isSidebarOpen ? "w-[260px] z-50" : "w-60"
-        }`}
-      >
-        <div className="h-full">
-          <div className="flex h-full min-h-0 flex-col">
-            <div className="scrollbar-trigger relative h-full w-full flex-1 items-start border-white/20">
-              <h2 className="sr-only">Chat history</h2>
-              <nav className="flex h-full w-full flex-col pt-2 px-2 pb-0" aria-label="Chat history">
-                <div className="mb-1 flex flex-row gap-2 text-white">
-                  {selection}
-                  <span className="" data-state="closed">
-                    <SidebarToggle isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-                  </span>
-                </div>
-                <div className="flex-col flex-1 transition-opacity duration-500 overflow-y-auto">
-                  <div className="flex flex-col gap-1 pb-2 text-gray-100 text-sm">
-                    {Object.entries(groupedLinks).reverse().map(([monthYear, weeks]) => {
-                      return Object.entries(weeks).reverse().map(([week, links], index) => {
-                        let date = `${monthYear}-${week}`;
-                        const isExpanded = expandedDates.includes(date);
+  console.log("Sidebar.tsx: conversations", searchTerm, filteredConversations)
 
-                        return (
-                          <div
-                            key={`${date}-${index}`}
-                            className={`${isExpanded ? "bg-gray-800" : ""} hover:bg-gray-800`}
-                          >
-                            <div
-                              id={`date-${date}`} // Unique ID for scrolling
-                              className={` z-[16] overflow-hidden`}
-                            >
-                              <button
-                                className={` ${isExpanded ? "text-white font-bold" : "text-gray-500 font-normal"}} h-9 p-3 text-base font-medium text-ellipsis overflow-hidden break-all uppercase w-full flex items-center justify-between  hover:text-white `}
-                                onClick={() => toggleDate(date)}
-                              >
-                                {monthYear} &ndash; W{week} ({links.length})
-                                {isExpanded ? (
-                                  <ChevronUp className="text-white" />
-                                ) : (
-                                  <ChevronDown className="text-gray-600" />
-                                )}
-                              </button>
-                            </div>
-                            <SidebarLinks
-                              className={`${
-                                !isExpanded ? "-translate-x-full h-0 duration-0 overflow-hidden" : "duration-500"
-                              } transition-all `}
-                              links={links}
-                              onLinkClick={onLinkClick}
-                              toggleSidebar={toggleSidebar}
-                              activeLink={activeLink}
-                              setActiveLink={setActiveLink}
-                            />
-                          </div>
-                        );
-                      });
-                    })}
-                  </div>
-                </div>
-                <div className="flex flex-col gap-0 text-white items-center border-t-2 border-t-gray-700 pt-3">
-                  <span className="text-sm capitalize text-gray-300">Like it? Share it! 🙌🏻</span>
-                  <div className="sidebarShare">
-                    <ShareButtons as={"icon"} />
-                  </div>
-                </div>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
+  return !isSidebarOpen ? (SidebarToggle({isSidebarOpen, toggleSidebar})) : (<>
+    {/* Overlay */}
+    <SidebarOverlay
+      isSidebarOpen={isSidebarOpen}
+      toggleSidebar={toggleSidebar}
+    />
+    <SidebarContainer isSidebarOpen={isSidebarOpen}>
+      <SidebarHeader
+        selection={selection}
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        onSearchChange={onSearchChange}
+      />
+      <GroupedLinks
+        groupedLinks={groupedLinks}
+        expandedDates={expandedDates}
+        toggleDate={toggleDate}
+        onLinkClick={onLinkClick}
+        toggleSidebar={toggleSidebar}
+        activeLink={activeLink}
+        setActiveLink={setActiveLink}
+      />
+      <ShareSection/>
+    </SidebarContainer>
+  </>)
+}

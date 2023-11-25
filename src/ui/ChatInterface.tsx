@@ -15,15 +15,8 @@ function ChatInterface() {
   let hasContent = conversations.length > 0
 
   const handleFileChange = useCallback((fileData: RecoveryGPT.Conversations) => {
-    const links: SidebarLink[] = fileData.map((conversation) => ({
-      label: conversation.title,
-      url: conversation.id,
-      date: conversation.create_time,
-    }))
-
     setConversations(fileData)
     setActiveConversation(fileData[0] || null)
-    setLinks(links)
   }, [])
 
   /**
@@ -56,7 +49,7 @@ function ChatInterface() {
   return (
     <>
       <div className="overflow-hidden w-full h-screen relative flex z-0 bg-gray-700">
-        {hasContent && <Sidebar selection={UploadButton} links={links} onLinkClick={handleLinkClick}/>}
+        {hasContent && <Sidebar selection={UploadButton} onLinkClick={handleLinkClick} conversations={conversations}/>}
         <div className="relative flex h-full max-w-full flex-1 overflow-hidden text-white">
           <div className="flex h-full max-w-full flex-1 flex-col">
             <main className="relative h-full w-full transition-width flex flex-col overflow-auto items-stretch flex-1">
