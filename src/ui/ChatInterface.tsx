@@ -11,7 +11,7 @@ function ChatInterface() {
   const [links, setLinks] = useState<SidebarLink[]>([])
   const [loading, setLoading] = useState(false)
   const [activeConversation, setActiveConversation] = useState<RecoveryGPT.Conversation | null>(null)
-  const [fileName, setFileName] = useState("Select a 'conversions.json' to review")
+  const [fileName, setFileName] = useState("Select 'conversions.json' files to review")
   let hasContent = conversations.length > 0
 
   const handleFileChange = useCallback((fileData: RecoveryGPT.Conversations) => {
@@ -26,14 +26,24 @@ function ChatInterface() {
     setLinks(links)
   }, [])
 
+  /**
+   * Handles the click event of a link in the chat interface.
+   * Sets the active conversation to null to show the loading state,
+   * then finds the conversation with the specified id and sets it as the active conversation.
+   * After a delay of 1 seconds, the loading state is set to false.
+   * 
+   * @param id - The id of the conversation to activate.
+   */
   const handleLinkClick = useCallback((id: string) => {
-    const conversation = conversations.find((conversation) => conversation.id === id)
     setActiveConversation(null) // Set activeConversation to null to show loading state
     setLoading(true)
+
+    const conversation = conversations.find((conversation) => conversation.id === id)
+
     setActiveConversation(conversation || null) // Set activeConversation to display content
     setTimeout(() => {
       setLoading(false)
-    }, 1000) // Wait for 2 seconds before displaying content
+    }, 1000) // Wait for 1 seconds before displaying content
   }, [conversations])
 
   const UploadButton =

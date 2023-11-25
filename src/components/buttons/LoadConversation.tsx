@@ -41,7 +41,7 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
         })
     } else {
       setFileContent([])
-      setFileName("Select a 'conversions.json' to review")
+      setFileName("Select 'conversions.json' files to review")
     }
   }
 
