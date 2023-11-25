@@ -3,7 +3,7 @@ import hljs from "highlight.js"
 import {Message} from "./Message"
 import {convertUnixTimestampToDate} from "@/lib"
 
-function ContentPanel({activeConversation}: RecoveryGPT.ConversationPaneProps) {
+function ContentPanel({activeConversation, display}: RecoveryGPT.ConversationPaneProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   const renderMessage = useCallback(
@@ -99,7 +99,7 @@ function ContentPanel({activeConversation}: RecoveryGPT.ConversationPaneProps) {
   }, [activeConversation])
 
   return (
-    <div ref={ref} className="contentPane h-full dark:bg-gray-800">
+    <div ref={ref} className={`contentPane h-full dark:bg-gray-800 ${display ? "" : "hidden"}\`}`}>
       {renderedActiveConversation}
     </div>
   )

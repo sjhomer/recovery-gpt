@@ -31,7 +31,7 @@ function ChatInterface() {
    * Sets the active conversation to null to show the loading state,
    * then finds the conversation with the specified id and sets it as the active conversation.
    * After a delay of 1 seconds, the loading state is set to false.
-   * 
+   *
    * @param id - The id of the conversation to activate.
    */
   const handleLinkClick = useCallback((id: string) => {
@@ -64,7 +64,7 @@ function ChatInterface() {
               <div className="flex-1 overflow-y-scroll">
                 {hasContent ? (<>
                   <ChatLoader display={loading}/>
-                  <ContentPanel activeConversation={activeConversation}/>
+                  <ContentPanel display={!loading} activeConversation={activeConversation}/>
                 </>) : (
                   <SplashPage action={UploadButton}/>
                 )}
