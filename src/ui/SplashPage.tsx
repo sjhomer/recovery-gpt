@@ -29,8 +29,8 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
         <h4 className="text-2xl  flex items-center gap-2"><Flag/> Start reviewing your conversations!</h4>
         <div className="mt-4 lg:w-1/2 mx-auto">{action}</div>
         <p className="text-gray-300">
-          Just hit the button to get started! You can effortlessly switch between files from the sidebar anytime you
-          want.
+          Just hit the button to get started. <strong>Select a single file or many files to review your past conversations!</strong> You can effortlessly switch between files from the sidebar anytime you
+          want to review a different conversations.
         </p>
         <h4 className="text-2xl  flex items-center gap-2">📚 Getting Your Exported Data</h4>
         <p className="text-gray-300 ">
@@ -41,8 +41,7 @@ const SplashPage: React.FC<{ action: JSX.Element }> = ({action}) => {
         </p>
         <Alert className="bg-green-700 text-slate-200 border-green-700 lg:text-justify">
           <BadgeInfo className="h-5 w-5 stroke-slate-200 mt-1"/>
-          <AlertTitle className="leading-normal">Note! You must load a <code>conversation.json</code> file from one of
-            your exports.</AlertTitle>
+          <AlertTitle className="leading-normal">Note! You must select a <code>conversation.json</code> file, or series of these, from your ChatGPT exports. The other files will not work, only <code>conversation.json</code> files.</AlertTitle>
         </Alert>
         <h5 className="text-2xl flex items-center gap-2"><Share/> Share RecoveryGPT with others!</h5>
         <p className="text-gray-300 ">

@@ -1,11 +1,11 @@
-import React, {useEffect, useMemo, useState} from "react"
-import {SidebarToggle} from "./SidebarToggle"
-import {SidebarLink, SidebarLinks} from "./SidebarLinks"
-import {ChevronDown, ChevronUp} from "lucide-react"
-import {getWeekNumber} from "@/lib"
-import {ShareButtons} from "@/components/buttons/ShareButtons"
+import React, { useEffect, useMemo, useState } from "react";
+import { SidebarToggle } from "./SidebarToggle";
+import { SidebarLink, SidebarLinks } from "./SidebarLinks";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { getWeekNumber } from "@/lib";
+import { ShareButtons } from "@/components/buttons/ShareButtons";
 
-export type {SidebarLink}
+export type { SidebarLink };
 
 interface SidebarProps {
   selection: JSX.Element;
@@ -18,69 +18,69 @@ export const Sidebar = ({
   links,
   onLinkClick
 }: SidebarProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [activeLink, setActiveLink] = useState("")
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false) // New state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [activeLink, setActiveLink] = useState("");
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false); // New state
 
   const groupedLinks = useMemo(() => {
     return links.reduce((groups: { [date: string]: { [week: string]: SidebarLink[] } }, link) => {
-      const date = new Date(link.date * 1000)
-      const monthYear = `${date.toLocaleString("default", {month: "short"})} ${date.getFullYear()}`
-      const week = `${getWeekNumber(date)}`
+      const date = new Date(link.date * 1000);
+      const monthYear = `${date.toLocaleString("default", { month: "short" })} ${date.getFullYear()}`;
+      const week = `${getWeekNumber(date)}`;
 
       if (!groups[monthYear]) {
-        groups[monthYear] = {}
+        groups[monthYear] = {};
       }
 
       if (!groups[monthYear][week]) {
-        groups[monthYear][week] = []
+        groups[monthYear][week] = [];
       }
 
-      groups[monthYear][week].push(link)
-      return groups
-    }, {})
-  }, [links])
+      groups[monthYear][week].push(link);
+      return groups;
+    }, {});
+  }, [links]);
 
-  const [expandedDates, setExpandedDates] = useState<string[]>([])
+  const [expandedDates, setExpandedDates] = useState<string[]>([]);
 
   useEffect(() => {
-    // Pick from th groupedLinks the first date and week, i.e. `${monthYear} ${week}`
-    const firstDate = Object.keys(groupedLinks)[0]
+    // Pick from the groupedLinks the first date and week, i.e. `${monthYear} ${week}`
+    const firstDate = Object.keys(groupedLinks).reverse()[0];
     // Weeks happen to pool backwards, so we need to pick the last week
-    const firstWeek = Object.keys(groupedLinks[firstDate]).pop()
-    setExpandedDates([`${firstDate}-${firstWeek}`])
-  }, [groupedLinks])
+    const firstWeek = Object.keys(groupedLinks[firstDate]).reverse()[0];
+    setExpandedDates([`${firstDate}-${firstWeek}`]);
+  }, [groupedLinks]);
 
   const toggleDate = (date: string) => {
     setExpandedDates(prevDates => {
       if (prevDates.includes(date)) {
-        return prevDates.filter(prevDate => prevDate !== date)
+        return prevDates.filter(prevDate => prevDate !== date);
       } else {
-        return [...prevDates, date]
+        return [...prevDates, date];
       }
-    })
+    });
 
     // Scroll the sidebar to show the selected date at the top, if we're opening it, not closing
-    const dateElement = document.getElementById(`date-${date}`)
+    const dateElement = document.getElementById(`date-${date}`);
     if (dateElement && !expandedDates.includes(date)) {
-      dateElement.scrollIntoView({behavior: "smooth", block: "start"})
+      dateElement.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }
+  };
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-    setIsOverlayVisible(!isSidebarOpen) // Toggle overlay visibility
-  }
+    setIsSidebarOpen(!isSidebarOpen);
+    setIsOverlayVisible(!isSidebarOpen); // Toggle overlay visibility
+  };
 
   useEffect(() => {
     // Set the first link as active when the list loads
     if (links.length > 0) {
-      setActiveLink(links[0].url)
+      setActiveLink(links[0].url);
     }
-  }, [links])
+  }, [links]);
 
   return !isSidebarOpen ? (
-    SidebarToggle({isSidebarOpen, toggleSidebar})
+    SidebarToggle({ isSidebarOpen, toggleSidebar })
   ) : (
     <>
       {/* Overlay */}
@@ -103,15 +103,15 @@ export const Sidebar = ({
                 <div className="mb-1 flex flex-row gap-2 text-white">
                   {selection}
                   <span className="" data-state="closed">
-                  <SidebarToggle isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
-                </span>
+                    <SidebarToggle isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+                  </span>
                 </div>
                 <div className="flex-col flex-1 transition-opacity duration-500 overflow-y-auto">
                   <div className="flex flex-col gap-1 pb-2 text-gray-100 text-sm">
-                    {Object.entries(groupedLinks).map(([monthYear, weeks]) => {
+                    {Object.entries(groupedLinks).reverse().map(([monthYear, weeks]) => {
                       return Object.entries(weeks).reverse().map(([week, links], index) => {
-                        let date = `${monthYear}-${week}`
-                        const isExpanded = expandedDates.includes(date)
+                        let date = `${monthYear}-${week}`;
+                        const isExpanded = expandedDates.includes(date);
 
                         return (
                           <div
@@ -128,15 +128,16 @@ export const Sidebar = ({
                               >
                                 {monthYear} &ndash; W{week} ({links.length})
                                 {isExpanded ? (
-                                  <ChevronUp className="text-white"/>
+                                  <ChevronUp className="text-white" />
                                 ) : (
-                                  <ChevronDown className="text-gray-600"/>
+                                  <ChevronDown className="text-gray-600" />
                                 )}
                               </button>
                             </div>
                             <SidebarLinks
                               className={`${
-                                !isExpanded ? "-translate-x-full h-0 duration-0 overflow-hidden" : "duration-500"} transition-all `}
+                                !isExpanded ? "-translate-x-full h-0 duration-0 overflow-hidden" : "duration-500"
+                              } transition-all `}
                               links={links}
                               onLinkClick={onLinkClick}
                               toggleSidebar={toggleSidebar}
@@ -144,23 +145,22 @@ export const Sidebar = ({
                               setActiveLink={setActiveLink}
                             />
                           </div>
-                        )
-                      })
+                        );
+                      });
                     })}
                   </div>
                 </div>
                 <div className="flex flex-col gap-0 text-white items-center border-t-2 border-t-gray-700 pt-3">
                   <span className="text-sm capitalize text-gray-300">Like it? Share it! 🙌🏻</span>
                   <div className="sidebarShare">
-                    <ShareButtons as={'icon'}/>
+                    <ShareButtons as={"icon"} />
                   </div>
                 </div>
               </nav>
             </div>
-
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};

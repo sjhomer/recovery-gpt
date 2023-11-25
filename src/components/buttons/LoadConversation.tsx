@@ -11,21 +11,37 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
   const [fileContent, setFileContent] = useState<RecoveryGPT.Conversations>([])
 
   const loadFile = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const contents = e.target?.result as string
-        const parsedFileData = JSON.parse(contents) as RecoveryGPT.Conversations
-        setFileContent(parsedFileData)
-        const filename = generateFilename(parsedFileData)
-        handleFileChange(parsedFileData, filename)
-        setFileName(filename)
-      }
-      reader.readAsText(file)
+    const files = event.target.files
+    if (files) {
+      const filePromises = Array.from(files).map((file) => {
+        return new Promise<RecoveryGPT.Conversations>((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            const contents = e.target?.result as string
+            const parsedFileData = JSON.parse(contents) as RecoveryGPT.Conversations
+            resolve(parsedFileData)
+          }
+          reader.onerror = (e) => {
+            reject(e)
+          }
+          reader.readAsText(file)
+        })
+      })
+
+      Promise.all(filePromises)
+        .then((results) => {
+          const combinedFileData = results.flat()
+          setFileContent(combinedFileData)
+          const filename = generateFilename(combinedFileData)
+          handleFileChange(combinedFileData, filename)
+          setFileName(filename)
+        })
+        .catch((error) => {
+          console.error("Error loading files:", error)
+        })
     } else {
       setFileContent([])
-      setFileName("Select a 'conversions.json' to review")
+      setFileName("Select 'conversions.json' files to review")
     }
   }
 
@@ -34,15 +50,23 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
     e.preventDefault()
   }
 
-
   const generateFilename = (parsedFileData: RecoveryGPT.Conversations) => {
-    const firstConversation = parsedFileData[0]
-    if (firstConversation && firstConversation.create_time) {
-      const unixTimestamp = firstConversation.create_time
-      const formattedDate = convertUnixTimestampToDate(unixTimestamp)
-      return `${formattedDate} (${parsedFileData.length})`
+    if (parsedFileData.length === 1) {
+      const firstConversation = parsedFileData[0]
+      if (firstConversation && firstConversation.create_time) {
+        const unixTimestamp = firstConversation.create_time
+        const formattedDate = convertUnixTimestampToDate(unixTimestamp)
+        return `${formattedDate} (${parsedFileData.length})`
+      }
+      return "Select a file"
+    } else {
+      const sortedConversations = parsedFileData.sort((a, b) => a.create_time - b.create_time)
+      const firstConversation = sortedConversations[0]
+      const lastConversation = sortedConversations[sortedConversations.length - 1]
+      const from = convertUnixTimestampToDate(firstConversation.create_time)
+      const until = convertUnixTimestampToDate(lastConversation.create_time)
+      return `${from} - ${until}`
     }
-    return "Select a file"
   }
 
   return (
@@ -55,7 +79,7 @@ const LoadConversation: React.FC<FileFormProps> = ({handleFileChange, fileName, 
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
         <span className="text-gray-300">{fileName}</span>
-        <input type="file" className="hidden" accept=".json" onChange={loadFile}/>
+        <input type="file" className="hidden" accept=".json" multiple onChange={loadFile}/>
       </label>
     </form>
   )
