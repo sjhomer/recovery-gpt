@@ -206,3 +206,7 @@ table {
 ol li p {
   display: inline;
 }
+
+.loader-desktop {
+  width: calc(100% - 260px);
+}
