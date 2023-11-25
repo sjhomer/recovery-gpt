@@ -7,6 +7,6 @@ const LoadingCta = () =>
   </svg>
 
 export const ChatLoader = ({display}: { display: boolean }) => <div
-  className={`absolute flex items-center justify-center bg-gradient-to-r from-gray-700 to-slate-800 content-center w-full h-full animate-shift-background z-[1000] ${display ? "" : "hidden"}`}>
+  className={`absolute flex items-center justify-center bg-gradient-to-r from-gray-700 to-slate-800 content-center w-full h-full animate-shift-background z-10 ${display ? "" : "hidden"}`}>
   <LoadingCta/>
 </div>

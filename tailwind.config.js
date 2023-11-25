@@ -55,5 +55,10 @@ module.exports = {
       },
     },
   },
+  safelist: [
+    'bg-gradient-to-*',
+    'from-*',
+    'to-*',
+  ],
   plugins: [require("tailwindcss-animate")],
 }
