@@ -14,12 +14,13 @@ interface SidebarProps {
   selection: JSX.Element;
   onLinkClick: (id: string) => void; // <-- New prop
   conversations: RecoveryGPT.Conversations;
+  searchInput: string;
   searchKeyword: string;
   setSearchInput: (searchTerm: string) => void;
 }
 
 export const Sidebar = ({
-  selection, onLinkClick, conversations, searchKeyword, setSearchInput
+  selection, onLinkClick, conversations, searchInput, searchKeyword, setSearchInput
 }: SidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [activeLink, setActiveLink] = useState("")
@@ -141,6 +142,7 @@ export const Sidebar = ({
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
         onSearchChange={setSearchInput}
+        searchInput={searchInput}
       />
       <GroupedLinks
         groupedLinks={groupedLinks}

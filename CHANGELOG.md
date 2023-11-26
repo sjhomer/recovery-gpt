@@ -1,5 +1,9 @@
 # RecoveryGPT Changelog
 
+## [1.1.2] - 2023-11-25
+### Patched
+- Ensuring as you switch file(s) that the former search query is cleared.
+
 ## [1.1.1] - 2023-11-25
 ### Patched
 - Tidying up the search keyword highlighting to be less overbearing and more subtle.

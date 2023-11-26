@@ -24,8 +24,12 @@ function ChatInterface() {
   let hasContent = conversations.length > 0
 
   const handleFileChange = useCallback((fileData: RecoveryGPT.Conversations) => {
+    // Update the conversations state
     setConversations(fileData)
+    // Await loading the conversations by setting loading, clearing the active conversation, and resetting the search input
+    setLoading(true)
     setActiveConversation(null)
+    setSearchInput("")
   }, [])
 
   /**
@@ -58,7 +62,7 @@ function ChatInterface() {
   return (
     <>
       <div className="overflow-hidden w-full h-screen relative flex z-0 bg-gray-700">
-        {hasContent && <Sidebar selection={UploadButton} onLinkClick={handleLinkClick} conversations={conversations} searchKeyword={searchKeyword} setSearchInput={onSearchChange}/>}
+        {hasContent && <Sidebar selection={UploadButton} onLinkClick={handleLinkClick} conversations={conversations} searchKeyword={searchKeyword}  searchInput={searchInput} setSearchInput={onSearchChange}/>}
         <div className="relative flex h-full max-w-full flex-1 overflow-hidden text-white">
           <div className="flex h-full max-w-full flex-1 flex-col">
             <main className="relative h-full w-full transition-width flex flex-col overflow-auto items-stretch flex-1">
