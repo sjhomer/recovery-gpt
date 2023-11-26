@@ -1,6 +1,6 @@
 # RecoveryGPT Changelog
 
-## [1.1.0] - 2023-11-25
+## [1.1.1] - 2023-11-25
 ### Patched
 - Tidying up the search keyword highlighting to be less overbearing and more subtle.
 
