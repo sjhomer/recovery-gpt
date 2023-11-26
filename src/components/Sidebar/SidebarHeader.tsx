@@ -6,6 +6,7 @@ interface SidebarHeaderProps {
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
   onSearchChange: (searchTerm: string) => void;
+  searchInput: string;
 }
 
 const SearchIcon = () => (
@@ -34,17 +35,14 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
   isSidebarOpen,
   toggleSidebar,
   onSearchChange,
+  searchInput
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setSearchTerm(newValue);
     onSearchChange(newValue);
   };
 
   const clearSearch = () => {
-    setSearchTerm('');
     onSearchChange('');
   };
 
@@ -62,11 +60,11 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
           <input
             type="text"
             placeholder="Search conversations..."
-            value={searchTerm}
+            value={searchInput}
             onChange={handleSearchChange}
             className="pl-10 w-full px-4 py-2 rounded-md border border-white/20 bg-transparent text-white focus:outline-none focus:border-indigo-500" // Update with Tailwind classes to match your design
           />
-          {searchTerm && (
+          {searchInput && (
             <button
               onClick={clearSearch}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-600 rounded-full p-1 text-white hover:bg-white hover:text-gray-600 focus:outline-none focus:bg-white focus:text-gray-600"
