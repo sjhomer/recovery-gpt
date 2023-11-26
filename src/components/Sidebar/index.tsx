@@ -2,7 +2,6 @@ import React, {useEffect, useMemo, useRef, useState} from "react"
 import {SidebarToggle} from "./SidebarToggle"
 import {SidebarLink} from "./SidebarLinks"
 import {getWeekNumber} from "@/lib"
-import SidebarOverlay from "@/components/Sidebar/SidebarOverlay"
 import SidebarContainer from "@/components/Sidebar/SidebarContainer"
 import SidebarHeader from "@/components/Sidebar/SidebarHeader"
 import ShareSection from "@/components/Sidebar/ShareSection"
@@ -22,6 +21,9 @@ interface SidebarProps {
 export const Sidebar = ({
   selection, onLinkClick, conversations, searchKeyword, setSearchInput
 }: SidebarProps) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [activeLink, setActiveLink] = useState("")
+  const [isOverlayVisible, setIsOverlayVisible] = useState(true) // New state
 
   const filteredConversations = useMemo(() => {
     if (!searchKeyword) return conversations
@@ -46,10 +48,6 @@ export const Sidebar = ({
 
     return results
   }, [conversations, searchKeyword])
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [activeLink, setActiveLink] = useState("")
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false) // New state
 
   const links: SidebarLink[] = useMemo(() => _.sortBy(filteredConversations.map((conversation) => ({
     label: conversation.title,
@@ -131,10 +129,12 @@ export const Sidebar = ({
 
   return !isSidebarOpen ? (SidebarToggle({isSidebarOpen, toggleSidebar})) : (<>
     {/* Overlay */}
-    <SidebarOverlay
-      isSidebarOpen={isSidebarOpen}
-      toggleSidebar={toggleSidebar}
-    />
+    {isOverlayVisible && (
+      <div
+        className="fixed inset-0 bg-black opacity-40 z-40 md:hidden"
+        onClick={toggleSidebar} // Close sidebar when clicking overlay
+      ></div>
+    )}
     <SidebarContainer isSidebarOpen={isSidebarOpen}>
       <SidebarHeader
         selection={selection}
