@@ -2,8 +2,9 @@ import React, {useCallback, useEffect, useLayoutEffect, useRef} from "react"
 import hljs from "highlight.js"
 import {Message} from "./Message"
 import {convertUnixTimestampToDate} from "@/lib"
+import * as _ from "lodash-es"
 
-function ContentPanel({activeConversation, display}: RecoveryGPT.ConversationPaneProps) {
+function ContentPanel({activeConversation, searchKeyword, display}: RecoveryGPT.ConversationPaneProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   const renderMessage = useCallback(
@@ -17,15 +18,19 @@ function ContentPanel({activeConversation, display}: RecoveryGPT.ConversationPan
         message.content.parts.length > 0 &&
         message.content.parts[0].length > 0
       ) {
+        let text = message.content.parts[0]
+        if(searchKeyword) {
+          text = text.replace(new RegExp(_.escapeRegExp(searchKeyword), 'gi'), `<span class="highlight">$&</span>`)
+        }
         return {
           author: authorName,
-          text: message.content.parts[0],
+          text,
           create_time: message.create_time,
         }
       }
       return null
     },
-    []
+    [searchKeyword]
   )
 
   const getConversationMessages = useCallback(

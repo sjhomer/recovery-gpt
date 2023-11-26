@@ -34,13 +34,13 @@ export const Message: React.FC<{ message: RenderedMessage }> = ({
             </div>
           </div>
         </div>
-        <div className="relative flex w-[calc(100%-50px)] flex-col gap-1 md:gap-3 lg:w-[calc(100%-115px)]">
-          <div className="flex flex-grow flex-col gap-3">
+        <div className="relative flex w-[calc(100%-50px)] flex-col gap-1 md:gap-3 lg:w-[calc(100%-115px)] overflow-y-visible">
+          <div className="flex flex-grow flex-col gap-3  overflow-y-visible">
             <div className="flex justify-between lg:block">
               <CopyToClipboard contentToCopy={message.text}/>
             </div>
             <div
-              className="min-h-[20px] flex items-start overflow-x-auto whitespace-pre-wrap break-words flex-col gap-4">
+              className="min-h-[20px] flex items-start overflow-x-auto overflow-y-visible whitespace-pre-wrap break-words flex-col gap-4">
               <Markdown message={message}/>
             </div>
           </div>

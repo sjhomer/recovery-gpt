@@ -37,8 +37,26 @@ const components = {
   ul({children}: { children: React.ReactNode }) {
     return <ul className="list-disc list-outside pl-4 leading-8 space-y-2 whitespace-normal">{children}</ul>
   },
-  p({children}: { children: React.ReactNode }) {
-    return <p>{children}</p>
+    span({children, className}: { children: React.ReactNode, className?: string }) {
+      return <span className={className?.includes('highlight') ? 'bg-indigo-700 text-white px-2 py-2 m-[-8px] rounded-lg shadow font-bold':''}>{children}</span>
+    },
+  table({children}: { children: React.ReactNode }) {
+    return <table className="w-full table-auto shadow-md">{children}</table>
+  },
+  thead({children}: { children: React.ReactNode }) {
+    return <thead>{children}</thead>
+  },
+  tbody({children}: { children: React.ReactNode }) {
+    return <tbody className="divide-y divide-x">{children}</tbody>
+  },
+  tr({children}: { children: React.ReactNode }) {
+    return <tr>{children}</tr>
+  },
+  th({children}: { children: React.ReactNode }) {
+    return <th className="border border-gray-300 p-2 text-left text-sm bg-gray-100">{children}</th>
+  },
+  td({children}: { children: React.ReactNode }) {
+    return <td className="border border-gray-300 p-2 text-sm bg-gray-800 hover:bg-gray-600">{children}</td>
   },
   code({node, inline, className, children, ...props}: CodeProps) {
     // Attempt to get the language of the codeblock
@@ -100,7 +118,7 @@ export const Markdown: React.FC<{ message: RenderedMessage }> = ({
   let markdownContent = isUser ? codeToPre(message.text) : message.text
 
   return <ReactMarkdown
-    className="markdown prose w-full break-words dark:prose-invert light flex flex-col gap-4"
+    className="markdown prose w-full break-words dark:prose-invert light flex flex-col gap-4  overflow-y-visible"
     // @ts-ignore
     components={components}
     rehypePlugins={[rehypeRaw, remarkMath, remarkGfm]}

@@ -19,6 +19,8 @@ interface SidebarLinksProps {
 export const SidebarLinks = ({className, links, onLinkClick, activeLink, setActiveLink, toggleSidebar}: SidebarLinksProps) => {
   const {width, height} = useWindowSize()
 
+  console.log('activeLink', activeLink)
+
   return <ol className={className}>
     {links.map((link) => {
       const clickLink = () => {
