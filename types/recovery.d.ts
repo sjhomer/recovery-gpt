@@ -63,6 +63,7 @@ declare namespace RecoveryGPT {
   interface ConversationPaneProps {
     activeConversation: Conversation | null;
     display: boolean;
+    searchKeyword?: string;
   }
 
 }

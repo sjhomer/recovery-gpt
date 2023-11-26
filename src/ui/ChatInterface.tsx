@@ -5,18 +5,27 @@ import {Sidebar, SidebarLink} from "@/components/Sidebar"
 import LoadConversation from "@/components/buttons/LoadConversation"
 import SplashPage from "./SplashPage"
 import {ChatLoader} from "@/components/ChatLoader"
+import {useDebounce} from "usehooks-ts"
 
 function ChatInterface() {
   const [conversations, setConversations] = useState<RecoveryGPT.Conversations>([])
   const [links, setLinks] = useState<SidebarLink[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [activeConversation, setActiveConversation] = useState<RecoveryGPT.Conversation | null>(null)
   const [fileName, setFileName] = useState("Select 'conversions.json' files to review")
+  const [searchInput, setSearchInput] = useState("")
+  const searchKeyword = useDebounce(searchInput.trim().toLowerCase(), 1000); // 1s debounce
+
+  const onSearchChange = useCallback((searchTerm: string) => {
+    setSearchInput(searchTerm)
+    setLoading(true)
+  }, [])
+
   let hasContent = conversations.length > 0
 
   const handleFileChange = useCallback((fileData: RecoveryGPT.Conversations) => {
     setConversations(fileData)
-    setActiveConversation(fileData[0] || null)
+    setActiveConversation(null)
   }, [])
 
   /**
@@ -36,7 +45,7 @@ function ChatInterface() {
     setActiveConversation(conversation || null) // Set activeConversation to display content
     setTimeout(() => {
       setLoading(false)
-    }, 1000) // Wait for 1 seconds before displaying content
+    }, 1000) // Wait for 1 second before displaying content
   }, [conversations])
 
   const UploadButton =
@@ -49,7 +58,7 @@ function ChatInterface() {
   return (
     <>
       <div className="overflow-hidden w-full h-screen relative flex z-0 bg-gray-700">
-        {hasContent && <Sidebar selection={UploadButton} onLinkClick={handleLinkClick} conversations={conversations}/>}
+        {hasContent && <Sidebar selection={UploadButton} onLinkClick={handleLinkClick} conversations={conversations} searchKeyword={searchKeyword} setSearchInput={onSearchChange}/>}
         <div className="relative flex h-full max-w-full flex-1 overflow-hidden text-white">
           <div className="flex h-full max-w-full flex-1 flex-col">
             <main className="relative h-full w-full transition-width flex flex-col overflow-auto items-stretch flex-1">
@@ -57,7 +66,7 @@ function ChatInterface() {
               <div className="flex-1 overflow-y-scroll">
                 {hasContent ? (<>
                   <ChatLoader display={loading}/>
-                  <ContentPanel display={!loading} activeConversation={activeConversation}/>
+                  <ContentPanel searchKeyword={searchKeyword} display={!loading} activeConversation={activeConversation}/>
                 </>) : (
                   <SplashPage action={UploadButton}/>
                 )}

@@ -64,7 +64,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             placeholder="Search conversations..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="pl-10 w-full px-4 py-2 rounded-md border border-white/20 bg-transparent border rounded text-white focus:outline-none focus:border-indigo-500" // Update with Tailwind classes to match your design
+            className="pl-10 w-full px-4 py-2 rounded-md border border-white/20 bg-transparent text-white focus:outline-none focus:border-indigo-500" // Update with Tailwind classes to match your design
           />
           {searchTerm && (
             <button

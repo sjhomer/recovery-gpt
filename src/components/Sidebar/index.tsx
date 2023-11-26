@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react"
+import React, {useEffect, useMemo, useRef, useState} from "react"
 import {SidebarToggle} from "./SidebarToggle"
 import {SidebarLink} from "./SidebarLinks"
 import {getWeekNumber} from "@/lib"
@@ -7,8 +7,7 @@ import SidebarContainer from "@/components/Sidebar/SidebarContainer"
 import SidebarHeader from "@/components/Sidebar/SidebarHeader"
 import ShareSection from "@/components/Sidebar/ShareSection"
 import GroupedLinks from "@/components/Sidebar/GroupedLinks"
-import Fuse from "fuse.js"
-import { useDebounce } from 'usehooks-ts'
+import * as _ from "lodash-es"
 
 export type {SidebarLink}
 
@@ -16,52 +15,47 @@ interface SidebarProps {
   selection: JSX.Element;
   onLinkClick: (id: string) => void; // <-- New prop
   conversations: RecoveryGPT.Conversations;
+  searchKeyword: string;
+  setSearchInput: (searchTerm: string) => void;
 }
 
 export const Sidebar = ({
-  selection, onLinkClick, conversations
+  selection, onLinkClick, conversations, searchKeyword, setSearchInput
 }: SidebarProps) => {
-  const [searchTerm, setSearchTerm] = useState("")
-  const debouncedSearchTerm = useDebounce(searchTerm, 500); // 500ms debounce
 
   const filteredConversations = useMemo(() => {
-    if (!debouncedSearchTerm.trim()) return conversations
+    if (!searchKeyword) return conversations
 
-    const fuse = new Fuse(conversations, {
-      keys: ["title",
-        {
-          name: 'mapping',
-          getFn: (item) => {
-            // Flatten the mapping into a searchable string or array of strings
-            return Object.values(item.mapping).map((mapItem) => {
-              // Example: combining the message content parts
-              // Adjust based on your searchable criteria
-              return mapItem.message?.content?.parts?.join(' ') || '';
-            });
-          }
-        }], // Adjust based on your data structure
+    // Clone the conversations array to avoid mutating the original data
+    const clonedConversations = _.cloneDeep(conversations)
+
+    const results = _.filter(clonedConversations, (conversation) => {
+      // Check if the search term is in the title, case-insensitively
+      const inTitle = conversation.title.toLowerCase().includes(searchKeyword)
+
+
+      // Join the parts and check if the search term is present, case-insensitively
+      const inMapping = _.some(conversation.mapping, (entry) => {
+        const joinedParts = entry?.message?.content?.parts?.join(" ").toLowerCase()
+        return joinedParts?.includes(searchKeyword) || false
+      })
+
+      // Include the conversation in the result if the term is found in the title or any mapping entry
+      return inTitle || inMapping
     })
 
-    const searchResults = fuse.search(debouncedSearchTerm).map(result => result.item)
-
-    console.log("Sidebar.tsx: filteredConversations", debouncedSearchTerm, searchResults)
-
-    return searchResults
-  }, [conversations, debouncedSearchTerm])
-
-  const onSearchChange = (newSearchTerm: string) => {
-    setSearchTerm(newSearchTerm);
-  };
+    return results
+  }, [conversations, searchKeyword])
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [activeLink, setActiveLink] = useState("")
   const [isOverlayVisible, setIsOverlayVisible] = useState(false) // New state
 
-  const links: SidebarLink[] = useMemo(() => filteredConversations.map((conversation) => ({
+  const links: SidebarLink[] = useMemo(() => _.sortBy(filteredConversations.map((conversation) => ({
     label: conversation.title,
     url: conversation.id,
     date: conversation.create_time,
-  })), [filteredConversations])
+  })), "date").reverse(), [filteredConversations])
 
   const groupedLinks = useMemo(() => {
     return links.reduce((groups: { [date: string]: { [week: string]: SidebarLink[] } }, link) => {
@@ -86,7 +80,7 @@ export const Sidebar = ({
 
   useEffect(() => {
     // Pick from the groupedLinks the first date and week, i.e. `${monthYear} ${week}`
-    const firstDate = Object.keys(groupedLinks)?.reverse()?.[0]
+    const firstDate = Object.keys(groupedLinks)?.[0]
     // Weeks happen to pool backwards, so we need to pick the last week
     const firstWeek = groupedLinks[firstDate] && Object.keys(groupedLinks[firstDate]).reverse()[0]
     setExpandedDates([`${firstDate}-${firstWeek}`])
@@ -113,14 +107,26 @@ export const Sidebar = ({
     setIsOverlayVisible(!isSidebarOpen) // Toggle overlay visibility
   }
 
-  useEffect(() => {
-    // Set the first link as active when the list loads
-    if (links.length > 0) {
-      setActiveLink(links[0].url)
-    }
-  }, [links])
+  const autoClickTimeout = useRef<NodeJS.Timeout | null>(null)
 
-  console.log("Sidebar.tsx: conversations", searchTerm, filteredConversations)
+  useEffect(() => {
+    // Find the most recent link
+    const mostRecentLink = links?.[0]
+
+    if (mostRecentLink) {
+      autoClickTimeout.current && clearTimeout(autoClickTimeout.current)
+      autoClickTimeout.current = setTimeout(() => {
+        onLinkClick(mostRecentLink.url)
+      }, 1000) // Adjust to 2000 for a 2s delay
+    }
+
+    // Cleanup
+    return () => {
+      if (autoClickTimeout.current) {
+        clearTimeout(autoClickTimeout.current)
+      }
+    }
+  }, [links, onLinkClick])
 
   return !isSidebarOpen ? (SidebarToggle({isSidebarOpen, toggleSidebar})) : (<>
     {/* Overlay */}
@@ -133,7 +139,7 @@ export const Sidebar = ({
         selection={selection}
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        onSearchChange={onSearchChange}
+        onSearchChange={setSearchInput}
       />
       <GroupedLinks
         groupedLinks={groupedLinks}
