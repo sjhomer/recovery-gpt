@@ -1,6 +1,10 @@
 # RecoveryGPT Changelog
 
 ## [1.1.0] - 2023-11-25
+### Patched
+- Tidying up the search keyword highlighting to be less overbearing and more subtle.
+
+## [1.1.0] - 2023-11-25
 ### Added
 - Multi-file selection support: Users can now load a series of ChatGPT export files and view them collectively within the application. Simply pool a series of your `conversation.json` files into a single folder, and select them all when prompted to load your data.
 - Search functionality: A new search field has been introduced to quickly find keywords in past conversations, with highlighting for matching keywords. As you type in the search field, the application will automatically filter the conversations list to only those that match the search query, selecting the first matching conversation.

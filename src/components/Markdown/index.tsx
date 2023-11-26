@@ -2,7 +2,7 @@ import ReactMarkdown from "react-markdown"
 import rehypeRaw from "rehype-raw"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
-import {generateRandomString, languageFileTypes, programmingLanguages} from "@/lib"
+import {generateRandomString, languageFileTypes} from "@/lib"
 import {Codeblock} from "@/components/Markdown/Codeblock"
 
 interface CodeProps {
@@ -37,9 +37,9 @@ const components = {
   ul({children}: { children: React.ReactNode }) {
     return <ul className="list-disc list-outside pl-4 leading-8 space-y-2 whitespace-normal">{children}</ul>
   },
-    span({children, className}: { children: React.ReactNode, className?: string }) {
-      return <span className={className?.includes('highlight') ? 'bg-indigo-700 text-white px-2 py-2 m-[-8px] rounded-lg shadow font-bold':''}>{children}</span>
-    },
+  span({children, className}: { children: React.ReactNode, className?: string }) {
+    return <span className={className?.includes("highlight") ? "bg-indigo-700 text-white p-1 m-[-4px] rounded-lg shadow" : ""}>{children}</span>
+  },
   table({children}: { children: React.ReactNode }) {
     return <table className="w-full table-auto shadow-md">{children}</table>
   },
