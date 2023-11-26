@@ -203,32 +203,3 @@ table {
 ol li p {
   display: inline;
 }
-
-span.highlight {
-  color: white;
-  display: inline-block;
-
-  &:before {
-    content: ' ';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 0 0 1em;
-    border-color: transparent transparent transparent rgba(9, 9, 186, 0.2);
-  }
-
-  &:after {
-    content: ' ';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 0 0 1em;
-    border-color: transparent transparent transparent #0909ba;
-  }
-}
