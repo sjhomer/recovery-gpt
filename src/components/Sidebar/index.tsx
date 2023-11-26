@@ -78,14 +78,6 @@ export const Sidebar = ({
 
   const [expandedDates, setExpandedDates] = useState<string[]>([])
 
-  useEffect(() => {
-    // Pick from the groupedLinks the first date and week, i.e. `${monthYear} ${week}`
-    const firstDate = Object.keys(groupedLinks)?.[0]
-    // Weeks happen to pool backwards, so we need to pick the last week
-    const firstWeek = groupedLinks[firstDate] && Object.keys(groupedLinks[firstDate]).reverse()[0]
-    setExpandedDates([`${firstDate}-${firstWeek}`])
-  }, [groupedLinks])
-
   const toggleDate = (date: string) => {
     setExpandedDates(prevDates => {
       if (prevDates.includes(date)) {
@@ -117,6 +109,7 @@ export const Sidebar = ({
       autoClickTimeout.current && clearTimeout(autoClickTimeout.current)
       autoClickTimeout.current = setTimeout(() => {
         onLinkClick(mostRecentLink.url)
+        setActiveLink(mostRecentLink.url)
       }, 1000) // Adjust to 2000 for a 2s delay
     }
 
@@ -127,6 +120,14 @@ export const Sidebar = ({
       }
     }
   }, [links, onLinkClick])
+
+  useEffect(() => {
+    // Pick from the groupedLinks the first date and week, i.e. `${monthYear} ${week}`
+    const firstDate = Object.keys(groupedLinks)?.[0]
+    // Weeks happen to pool backwards, so we need to pick the last week
+    const firstWeek = groupedLinks[firstDate] && Object.keys(groupedLinks[firstDate]).reverse()[0]
+    setExpandedDates([`${firstDate}-${firstWeek}`])
+  }, [groupedLinks])
 
   return !isSidebarOpen ? (SidebarToggle({isSidebarOpen, toggleSidebar})) : (<>
     {/* Overlay */}
